@@ -19,8 +19,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -52,7 +52,7 @@ public class DefiningObjective {
 
     @OneToMany(mappedBy = "definingObjective", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("title ASC")
-    private List<Outcome> outcomes = new ArrayList<>();
+    private Set<Outcome> outcomes = new LinkedHashSet<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
