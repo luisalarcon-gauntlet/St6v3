@@ -40,12 +40,18 @@ class RateLimitTest {
     @Autowired
     private RateLimitConfig rateLimitConfig;
 
+    @Autowired
+    private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
+
     private Cookie authCookie;
 
     @BeforeEach
     void setUp() throws Exception {
         rateLimitConfig.clearBuckets();
 
+        jdbcTemplate.execute("DELETE FROM weekly_commits");
+        jdbcTemplate.execute("DELETE FROM weekly_cycles");
+        jdbcTemplate.execute("DELETE FROM audit_log");
         userRepository.deleteAll();
 
         User user = new User();
