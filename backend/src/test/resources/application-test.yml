@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/st6_test}
+    username: ${SPRING_DATASOURCE_USERNAME:test}
+    password: ${SPRING_DATASOURCE_PASSWORD:test}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    clean-disabled: false
+
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:test-jwt-secret-key-that-is-at-least-32-characters-long}
+    expiration-ms: ${APP_JWT_EXPIRATION_MS:3600000}
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:5173}
+  rate-limit:
+    requests-per-minute: ${APP_RATE_LIMIT_REQUESTS_PER_MINUTE:100}
