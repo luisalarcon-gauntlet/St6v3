@@ -38,6 +38,9 @@ class SecurityRoleIT {
     @Autowired
     private RateLimitConfig rateLimitConfig;
 
+    @Autowired
+    private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
+
     private Cookie memberCookie;
     private Cookie managerCookie;
     private Cookie adminCookie;
@@ -45,6 +48,9 @@ class SecurityRoleIT {
     @BeforeEach
     void setUp() throws Exception {
         rateLimitConfig.clearBuckets();
+        jdbcTemplate.execute("DELETE FROM weekly_commits");
+        jdbcTemplate.execute("DELETE FROM weekly_cycles");
+        jdbcTemplate.execute("DELETE FROM audit_log");
         userRepository.deleteAll();
 
         memberCookie = createUserAndLogin("bob@st6.com", "Bob", Role.MEMBER);
