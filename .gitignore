@@ -1,0 +1,28 @@
+# Environment secrets
+.env
+
+# Java / Maven
+backend/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+.DS_Store
+
+# Docker
+docker-data/
+
+# OS
+Thumbs.db
