@@ -1,10 +1,52 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from '@/context/AuthContext';
+import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
+import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
+import { AppShell } from '@/components/layout/AppShell';
+import { LoginPage } from '@/pages/LoginPage';
+import { UnauthorizedPage } from '@/pages/UnauthorizedPage';
+import { WeeklyPlannerPage } from '@/pages/WeeklyPlannerPage';
+import { ReconciliationPage } from '@/pages/ReconciliationPage';
+import { HistoryPage } from '@/pages/HistoryPage';
+import { ManagerDashboardPage } from '@/pages/ManagerDashboardPage';
+
 function App() {
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
-      <h1 className="text-3xl font-sans font-bold text-white">
-        ST6 Weekly Commits
-      </h1>
-    </div>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AuthProvider>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/unauthorized" element={<UnauthorizedPage />} />
+
+            <Route
+              element={
+                <ProtectedRoute allowedRoles={['MEMBER', 'MANAGER', 'ADMIN']}>
+                  <AppShell />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<WeeklyPlannerPage />} />
+              <Route path="reconcile" element={<ReconciliationPage />} />
+              <Route path="history" element={<HistoryPage />} />
+            </Route>
+
+            <Route
+              path="team"
+              element={
+                <ProtectedRoute allowedRoles={['MANAGER', 'ADMIN']}>
+                  <AppShell />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<ManagerDashboardPage />} />
+            </Route>
+
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </AuthProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 
