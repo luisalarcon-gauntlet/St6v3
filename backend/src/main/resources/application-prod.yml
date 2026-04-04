@@ -1,0 +1,8 @@
+spring:
+  jpa:
+    show-sql: false
+
+logging:
+  level:
+    com.st6.weekly: INFO
+    org.hibernate.SQL: WARN

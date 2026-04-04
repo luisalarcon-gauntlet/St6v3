@@ -1,0 +1,7 @@
+import { http, HttpResponse } from 'msw';
+
+export const handlers = [
+  http.get('/api/v1/auth/me', () => {
+    return HttpResponse.json(null, { status: 401 });
+  }),
+];
