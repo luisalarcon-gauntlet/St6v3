@@ -1,4 +1,5 @@
 import type { ChessCategory } from '@/types/domain';
+import { CHESS_STYLES } from '@/constants/styles';
 
 const PIECE_MAP: Record<ChessCategory, { icon: string; label: string }> = {
   KING: { icon: '\u265A', label: 'King' },
@@ -11,14 +12,24 @@ const PIECE_MAP: Record<ChessCategory, { icon: string; label: string }> = {
 
 interface ChessPieceIconProps {
   category: ChessCategory;
+  size?: 'sm' | 'md';
+  showLabel?: boolean;
 }
 
-export function ChessPieceIcon({ category }: ChessPieceIconProps) {
+export function ChessPieceIcon({ category, size = 'sm', showLabel = true }: ChessPieceIconProps) {
   const piece = PIECE_MAP[category];
+  const style = CHESS_STYLES[category];
+  const sizeClasses = size === 'md' ? 'w-7 h-7 text-base' : 'w-5 h-5 text-xs';
+
   return (
-    <span className="inline-flex items-center gap-1 text-sm" title={piece.label}>
-      <span aria-hidden="true">{piece.icon}</span>
-      <span className="text-xs text-muted">{piece.label}</span>
+    <span className="inline-flex items-center gap-1.5" title={piece.label}>
+      <span
+        className={`inline-flex items-center justify-center rounded ${sizeClasses} ${style.pill}`}
+        aria-hidden="true"
+      >
+        {piece.icon}
+      </span>
+      {showLabel && <span className="text-xs text-muted">{piece.label}</span>}
     </span>
   );
 }

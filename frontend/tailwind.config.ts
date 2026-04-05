@@ -18,6 +18,12 @@ const config: Config = {
         locked: '#3b82f6',
         reconciling: '#f59e0b',
         reconciled: '#4ade80',
+        'chess-king': '#e09f3e',
+        'chess-queen': '#a855f7',
+        'chess-rook': '#3b82f6',
+        'chess-bishop': '#4ade80',
+        'chess-knight': '#ef4444',
+        'chess-pawn': '#a89f96',
       },
       fontFamily: {
         mono: ['JetBrains Mono', 'monospace'],

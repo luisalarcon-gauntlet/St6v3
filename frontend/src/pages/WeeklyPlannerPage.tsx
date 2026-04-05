@@ -6,6 +6,9 @@ import { CommitForm } from '@/components/commits/CommitForm';
 import { CommitList } from '@/components/commits/CommitList';
 import { WeekStateBar } from '@/components/lifecycle/WeekStateBar';
 import { StateTransitionButton } from '@/components/lifecycle/StateTransitionButton';
+import { LifecycleStepper } from '@/components/lifecycle/LifecycleStepper';
+import { WeekSummary } from '@/components/planner/WeekSummary';
+import { ChessDistribution } from '@/components/planner/ChessDistribution';
 import { LoadingSkeleton } from '@/components/shared/LoadingSkeleton';
 import type { CreateCommitRequest } from '@/types/api';
 import type { AppError } from '@/types/errors';
@@ -63,13 +66,16 @@ export function WeeklyPlannerPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-primary">Weekly Planner</h1>
-          <div className="mt-1">
-            <WeekStateBar state={cycle.state} weekStartDate={cycle.weekStartDate} />
+    <div className="max-w-5xl mx-auto space-y-6">
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div className="flex items-center gap-6">
+          <div>
+            <h1 className="text-2xl font-bold text-primary">Weekly Planner</h1>
+            <div className="mt-1">
+              <WeekStateBar state={cycle.state} weekStartDate={cycle.weekStartDate} />
+            </div>
           </div>
+          <LifecycleStepper currentState={cycle.state} />
         </div>
         <StateTransitionButton
           cycleState={cycle.state}
@@ -85,22 +91,31 @@ export function WeeklyPlannerPage() {
         </div>
       )}
 
-      {cycle.state === 'DRAFT' && (
-        <CommitForm
-          cycleId={cycle.id}
-          rcdoTree={rcdoTree}
-          onSubmit={handleAddCommit}
-          existingChessCategories={existingChessCategories}
-        />
-      )}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6">
+        <div className="space-y-6">
+          {cycle.state === 'DRAFT' && (
+            <CommitForm
+              cycleId={cycle.id}
+              rcdoTree={rcdoTree}
+              onSubmit={handleAddCommit}
+              existingChessCategories={existingChessCategories}
+            />
+          )}
 
-      <CommitList
-        commits={cycle.commits}
-        rcdoTree={rcdoTree}
-        loading={false}
-        cycleState={cycle.state}
-        onDelete={handleDelete}
-      />
+          <CommitList
+            commits={cycle.commits}
+            rcdoTree={rcdoTree}
+            loading={false}
+            cycleState={cycle.state}
+            onDelete={handleDelete}
+          />
+        </div>
+
+        <aside className="space-y-4">
+          <WeekSummary commits={cycle.commits} />
+          <ChessDistribution commits={cycle.commits} />
+        </aside>
+      </div>
     </div>
   );
 }

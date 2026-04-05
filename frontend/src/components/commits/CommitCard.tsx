@@ -1,5 +1,6 @@
 import type { WeeklyCommit, CycleState, RallyCry } from '@/types/domain';
 import { ChessPieceIcon } from '@/components/chess/ChessPieceIcon';
+import { CHESS_STYLES, COMPLETION_STATUS_STYLES } from '@/constants/styles';
 
 interface CommitCardProps {
   commit: WeeklyCommit;
@@ -10,34 +11,51 @@ interface CommitCardProps {
 
 export function CommitCard({ commit, rcdoTree, cycleState, onDelete }: CommitCardProps) {
   const outcomeName = findOutcomeName(rcdoTree, commit.outcomeId);
+  const chess = CHESS_STYLES[commit.chessCategory];
+  const status = COMPLETION_STATUS_STYLES[commit.completionStatus];
 
   return (
-    <article className="bg-surface border border-border rounded-lg p-4 transition-all duration-200 hover:border-muted">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <ChessPieceIcon category={commit.chessCategory} />
-            <span className="text-sm font-mono text-muted">{commit.plannedHours}h</span>
-          </div>
-          <h2 className="text-primary text-sm font-medium truncate">{commit.title}</h2>
-          {commit.description && (
-            <p className="text-muted text-xs mt-1 line-clamp-2">{commit.description}</p>
-          )}
-          {outcomeName && (
-            <p className="text-xs text-accent/70 mt-1 truncate">{outcomeName}</p>
-          )}
-        </div>
+    <article
+      className={`bg-surface border border-border rounded-lg p-4 transition-all duration-200 hover:border-muted ${chess.border} ${chess.card}`}
+    >
+      <div className="flex items-start gap-3">
+        <span className="font-mono text-xs text-muted shrink-0 mt-0.5">
+          #{commit.priorityRank}
+        </span>
 
-        {cycleState === 'DRAFT' && (
-          <button
-            type="button"
-            aria-label="Delete"
-            onClick={() => onDelete(commit.id)}
-            className="text-muted hover:text-danger text-sm transition-colors shrink-0"
-          >
-            &times;
-          </button>
-        )}
+        <ChessPieceIcon category={commit.chessCategory} />
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="text-primary text-sm font-semibold truncate">{commit.title}</h2>
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="font-mono text-xs text-muted">{commit.plannedHours}h</span>
+              {cycleState === 'DRAFT' && (
+                <button
+                  type="button"
+                  aria-label="Delete"
+                  onClick={() => onDelete(commit.id)}
+                  className="text-muted hover:text-danger text-sm transition-colors"
+                >
+                  &times;
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+            {outcomeName && (
+              <span className="text-xs bg-accent/10 text-accent px-1.5 py-0.5 rounded truncate max-w-[200px]">
+                {outcomeName}
+              </span>
+            )}
+            <span
+              className={`inline-flex items-center text-[10px] px-1.5 py-0.5 rounded border ${status.badge}`}
+            >
+              {status.label}
+            </span>
+          </div>
+        </div>
       </div>
     </article>
   );

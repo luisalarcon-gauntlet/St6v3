@@ -1,4 +1,51 @@
-import type { CycleState } from '@/types/domain';
+import type { CycleState, ChessCategory, CompletionStatus } from '@/types/domain';
+
+export const CHESS_STYLES = {
+  KING: {
+    border: 'border-l-[6px] border-l-chess-king',
+    card: 'bg-chess-king/5 shadow-[0_0_15px_-3px_rgba(224,159,62,0.2)]',
+    pill: 'bg-chess-king/15 text-chess-king',
+    color: '#e09f3e',
+  },
+  QUEEN: {
+    border: 'border-l-4 border-l-chess-queen',
+    card: '',
+    pill: 'bg-chess-queen/15 text-chess-queen',
+    color: '#a855f7',
+  },
+  ROOK: {
+    border: 'border-l-4 border-l-chess-rook',
+    card: '',
+    pill: 'bg-chess-rook/15 text-chess-rook',
+    color: '#3b82f6',
+  },
+  BISHOP: {
+    border: 'border-l-4 border-l-chess-bishop',
+    card: '',
+    pill: 'bg-chess-bishop/15 text-chess-bishop',
+    color: '#4ade80',
+  },
+  KNIGHT: {
+    border: 'border-l-4 border-l-chess-knight',
+    card: '',
+    pill: 'bg-chess-knight/15 text-chess-knight',
+    color: '#ef4444',
+  },
+  PAWN: {
+    border: 'border-l-4 border-l-chess-pawn',
+    card: '',
+    pill: 'bg-chess-pawn/15 text-chess-pawn',
+    color: '#a89f96',
+  },
+} as const satisfies Record<ChessCategory, { border: string; card: string; pill: string; color: string }>;
+
+export const COMPLETION_STATUS_STYLES = {
+  NOT_STARTED: { label: 'Not Started', badge: 'bg-muted/10 text-muted border-muted/20' },
+  IN_PROGRESS: { label: 'In Progress', badge: 'bg-locked/10 text-locked border-locked/20' },
+  COMPLETED: { label: 'Completed', badge: 'bg-success/10 text-success border-success/20' },
+  CARRIED_FORWARD: { label: 'Carried Forward', badge: 'bg-warning/10 text-warning border-warning/20' },
+  DROPPED: { label: 'Dropped', badge: 'bg-danger/10 text-danger border-danger/20' },
+} as const satisfies Record<CompletionStatus, { label: string; badge: string }>;
 
 export const CYCLE_STATE_STYLES = {
   DRAFT: {
