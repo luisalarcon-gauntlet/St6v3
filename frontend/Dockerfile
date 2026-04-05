@@ -3,6 +3,8 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm install
 COPY . .
+ARG VITE_DEV_MODE=false
+ENV VITE_DEV_MODE=$VITE_DEV_MODE
 RUN npm run build
 
 FROM node:20-alpine

@@ -9,15 +9,15 @@
 -- =============================================
 INSERT INTO users (id, email, display_name, password_hash, role, manager_id) VALUES
     ('a1000000-0000-0000-0000-000000000001', 'alice@st6.example', 'Alice Chen',
-     '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'MANAGER', NULL),
+     '$2a$10$ygMJqwc9mIRW2Ya.oLaY1egWwGy2dsEtPsbNt7/sEl64o3Ngy3PiW', 'MANAGER', NULL),
     ('b2000000-0000-0000-0000-000000000002', 'bob@st6.example', 'Bob Martinez',
-     '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'MEMBER',
+     '$2a$10$ygMJqwc9mIRW2Ya.oLaY1egWwGy2dsEtPsbNt7/sEl64o3Ngy3PiW', 'MEMBER',
      'a1000000-0000-0000-0000-000000000001'),
     ('c3000000-0000-0000-0000-000000000003', 'carol@st6.example', 'Carol Nguyen',
-     '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'MEMBER',
+     '$2a$10$ygMJqwc9mIRW2Ya.oLaY1egWwGy2dsEtPsbNt7/sEl64o3Ngy3PiW', 'MEMBER',
      'a1000000-0000-0000-0000-000000000001'),
     ('d4000000-0000-0000-0000-000000000004', 'dave@st6.example', 'Dave Kim',
-     '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ADMIN', NULL);
+     '$2a$10$ygMJqwc9mIRW2Ya.oLaY1egWwGy2dsEtPsbNt7/sEl64o3Ngy3PiW', 'ADMIN', NULL);
 
 -- =============================================
 -- RCDO HIERARCHY

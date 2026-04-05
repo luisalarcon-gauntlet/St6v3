@@ -29,7 +29,10 @@ services:
         condition: service_healthy
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        VITE_DEV_MODE: "true"
     ports:
       - "5173:5173"
     depends_on:
