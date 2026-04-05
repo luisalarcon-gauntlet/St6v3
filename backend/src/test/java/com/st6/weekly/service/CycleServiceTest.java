@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,8 +23,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,15 +52,17 @@ class CycleServiceTest {
     @Spy
     private CycleStateMachine stateMachine;
 
-    @InjectMocks
     private CycleService cycleService;
 
     private UUID userId;
     private LocalDate currentMonday;
+    private Clock clock;
 
     @BeforeEach
     void setUp() {
         userId = UUID.randomUUID();
+        clock = Clock.systemDefaultZone();
+        cycleService = new CycleService(cycleRepository, commitRepository, stateMachine, clock);
         currentMonday = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
     }
 
@@ -286,6 +290,35 @@ class CycleServiceTest {
         UUID otherUser = UUID.randomUUID();
         assertThatThrownBy(() -> cycleService.getCycleById(cycle.getId(), otherUser))
                 .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    // --- week_start_date calculation ---
+
+    @Test
+    void getOrCreateCurrentCycle_on_sunday_returns_previous_monday() {
+        // 2026-04-05 is a Sunday; the previous Monday is 2026-03-30
+        LocalDate sunday = LocalDate.of(2026, 4, 5);
+        LocalDate expectedMonday = LocalDate.of(2026, 3, 30);
+        Clock sundayClock = Clock.fixed(
+                sunday.atStartOfDay(ZoneOffset.UTC).toInstant(),
+                ZoneId.of("UTC")
+        );
+        CycleService sundayService = new CycleService(
+                cycleRepository, commitRepository, stateMachine, sundayClock);
+
+        when(cycleRepository.findByUserIdAndWeekStartDate(eq(userId), eq(expectedMonday)))
+                .thenReturn(Optional.empty());
+        when(cycleRepository.save(any(WeeklyCycle.class)))
+                .thenAnswer(inv -> {
+                    WeeklyCycle c = inv.getArgument(0);
+                    c.setId(UUID.randomUUID());
+                    return c;
+                });
+
+        WeeklyCycle result = sundayService.getOrCreateCurrentCycle(userId);
+
+        assertThat(result.getWeekStartDate()).isEqualTo(expectedMonday);
+        assertThat(result.getWeekStartDate().getDayOfWeek()).isEqualTo(DayOfWeek.MONDAY);
     }
 
     // --- Helpers ---

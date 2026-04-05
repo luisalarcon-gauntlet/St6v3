@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -31,10 +32,11 @@ public class CycleService {
     private final WeeklyCycleRepository cycleRepository;
     private final WeeklyCommitRepository commitRepository;
     private final CycleStateMachine stateMachine;
+    private final Clock clock;
 
     @Transactional
     public WeeklyCycle getOrCreateCurrentCycle(UUID userId) {
-        LocalDate monday = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate monday = LocalDate.now(clock).with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 
         return cycleRepository.findByUserIdAndWeekStartDate(userId, monday)
                 .orElseGet(() -> {
