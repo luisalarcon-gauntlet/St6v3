@@ -78,7 +78,7 @@ export function CommitForm({ rcdoTree, onSubmit, existingChessCategories }: Comm
   return (
     <form onSubmit={handleSubmit} noValidate className="bg-surface border border-border rounded-lg p-4 space-y-4">
       <div>
-        <label htmlFor="commit-title" className="block text-sm text-gray-400 mb-1">
+        <label htmlFor="commit-title" className="block text-sm text-muted mb-1">
           Title
         </label>
         <input
@@ -86,14 +86,14 @@ export function CommitForm({ rcdoTree, onSubmit, existingChessCategories }: Comm
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full bg-background border border-border rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-primary transition-colors"
+          className="w-full bg-background border border-border rounded px-3 py-2 text-primary text-sm focus:outline-none focus:border-accent transition-colors"
           placeholder="What will you accomplish?"
         />
         {errors.title && <p className="text-danger text-xs mt-1">{errors.title}</p>}
       </div>
 
       <div>
-        <label htmlFor="commit-description" className="block text-sm text-gray-400 mb-1">
+        <label htmlFor="commit-description" className="block text-sm text-muted mb-1">
           Description
         </label>
         <textarea
@@ -101,13 +101,13 @@ export function CommitForm({ rcdoTree, onSubmit, existingChessCategories }: Comm
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={2}
-          className="w-full bg-background border border-border rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-primary transition-colors resize-none"
+          className="w-full bg-background border border-border rounded px-3 py-2 text-primary text-sm focus:outline-none focus:border-accent transition-colors resize-none"
           placeholder="Optional details..."
         />
       </div>
 
       <div>
-        <label htmlFor="commit-hours" className="block text-sm text-gray-400 mb-1">
+        <label htmlFor="commit-hours" className="block text-sm text-muted mb-1">
           Planned Hours
         </label>
         <input
@@ -118,14 +118,14 @@ export function CommitForm({ rcdoTree, onSubmit, existingChessCategories }: Comm
           step="0.5"
           value={plannedHours}
           onChange={(e) => setPlannedHours(e.target.value)}
-          className="w-32 bg-background border border-border rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-primary transition-colors"
+          className="w-32 bg-background border border-border rounded px-3 py-2 text-primary text-sm focus:outline-none focus:border-accent transition-colors"
           placeholder="0"
         />
         {errors.plannedHours && <p className="text-danger text-xs mt-1">{errors.plannedHours}</p>}
       </div>
 
       <div>
-        <span className="block text-sm text-gray-400 mb-1">Chess Category</span>
+        <span className="block text-sm text-muted mb-1">Chess Category</span>
         <ChessPiecePicker
           value={chessCategory}
           onChange={setChessCategory}
@@ -135,7 +135,7 @@ export function CommitForm({ rcdoTree, onSubmit, existingChessCategories }: Comm
       </div>
 
       <div>
-        <span className="block text-sm text-gray-400 mb-1">Outcome</span>
+        <span className="block text-sm text-muted mb-1">Outcome</span>
         <RCDOTreePicker tree={rcdoTree} value={outcomeId} onChange={setOutcomeId} />
         {errors.outcomeId && <p className="text-danger text-xs mt-1">{errors.outcomeId}</p>}
       </div>
@@ -143,7 +143,7 @@ export function CommitForm({ rcdoTree, onSubmit, existingChessCategories }: Comm
       <button
         type="submit"
         disabled={submitting}
-        className="bg-primary text-white text-sm px-4 py-2 rounded font-medium hover:bg-blue-600 transition-colors disabled:opacity-50"
+        className="bg-accent text-primary text-sm px-4 py-2 rounded font-medium hover:bg-accent/80 transition-colors disabled:opacity-50"
       >
         {submitting ? 'Adding...' : 'Add Commit'}
       </button>

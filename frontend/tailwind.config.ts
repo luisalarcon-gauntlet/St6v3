@@ -5,13 +5,19 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: '#0B0E14',
-        surface: '#151922',
-        border: '#1E2533',
-        primary: '#3B82F6',
-        success: '#10B981',
-        warning: '#F59E0B',
-        danger: '#EF4444',
+        background: '#1a1614',
+        surface: '#252220',
+        border: '#3a3532',
+        accent: '#e09f3e',
+        primary: '#f5f0eb',
+        muted: '#a89f96',
+        success: '#4ade80',
+        warning: '#fbbf24',
+        danger: '#f87171',
+        draft: '#fbbf24',
+        locked: '#3b82f6',
+        reconciling: '#f59e0b',
+        reconciled: '#4ade80',
       },
       fontFamily: {
         mono: ['JetBrains Mono', 'monospace'],

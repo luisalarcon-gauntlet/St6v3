@@ -44,8 +44,8 @@ export function RCDOTreePicker({ tree, value, onChange }: RCDOTreePickerProps) {
         onClick={() => setOpen(!open)}
         className={`
           w-full text-left px-3 py-2 rounded border text-sm transition-colors
-          ${value ? 'border-border text-white' : 'border-border text-gray-400'}
-          bg-background hover:border-gray-500 focus:outline-none focus:border-primary
+          ${value ? 'border-border text-primary' : 'border-border text-muted'}
+          bg-background hover:border-muted focus:outline-none focus:border-accent
         `}
       >
         {selectedLabel || 'Select an outcome...'}
@@ -60,13 +60,13 @@ export function RCDOTreePicker({ tree, value, onChange }: RCDOTreePickerProps) {
         >
           {tree.map((rc) => (
             <div key={rc.id} role="treeitem" aria-expanded="true">
-              <div className="px-3 py-1.5 text-xs font-bold text-gray-400 uppercase tracking-wide bg-surface">
+              <div className="px-3 py-1.5 text-xs font-bold text-muted uppercase tracking-wide bg-surface">
                 {rc.title}
               </div>
               {rc.definingObjectives.map((dObj) => (
                 <div key={dObj.id} role="group">
                   <div role="treeitem" aria-expanded="true" className="pl-3">
-                    <div className="px-3 py-1 text-xs text-gray-500">
+                    <div className="px-3 py-1 text-xs text-muted">
                       {dObj.title}
                     </div>
                   </div>
@@ -83,7 +83,7 @@ export function RCDOTreePicker({ tree, value, onChange }: RCDOTreePickerProps) {
                       }}
                       className={`
                         w-full text-left px-6 py-1.5 text-sm transition-colors
-                        ${value === outcome.id ? 'text-primary bg-primary/5' : 'text-gray-300 hover:bg-white/5'}
+                        ${value === outcome.id ? 'text-accent bg-accent/5' : 'text-primary hover:bg-primary/5'}
                       `}
                     >
                       {outcome.title}

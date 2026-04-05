@@ -44,7 +44,7 @@ export function TeamGrid({ onSelectMember }: TeamGridProps) {
 
   if (!team || team.content.length === 0) {
     return (
-      <div className="text-center py-12 text-gray-400">
+      <div className="text-center py-12 text-muted">
         <p className="text-lg">No team members</p>
         <p className="text-sm mt-1">Your team will appear here once members are assigned.</p>
       </div>
@@ -66,12 +66,12 @@ export function TeamGrid({ onSelectMember }: TeamGridProps) {
             aria-label="Previous"
             disabled={page === 0}
             onClick={() => setPage((p) => Math.max(0, p - 1))}
-            className="px-3 py-1.5 text-sm text-gray-400 hover:text-white border border-border rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-3 py-1.5 text-sm text-muted hover:text-primary border border-border rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Previous
           </button>
 
-          <span className="text-sm text-gray-400">
+          <span className="text-sm text-muted">
             Page {team.number + 1} of {team.totalPages}
           </span>
 
@@ -80,7 +80,7 @@ export function TeamGrid({ onSelectMember }: TeamGridProps) {
             aria-label="Next"
             disabled={team.number >= team.totalPages - 1}
             onClick={() => setPage((p) => p + 1)}
-            className="px-3 py-1.5 text-sm text-gray-400 hover:text-white border border-border rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-3 py-1.5 text-sm text-muted hover:text-primary border border-border rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Next
           </button>

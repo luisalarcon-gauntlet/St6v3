@@ -43,7 +43,7 @@ export function ReconciliationPage() {
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Reconciliation</h1>
+          <h1 className="text-2xl font-bold text-primary">Reconciliation</h1>
           <div className="mt-1">
             <WeekStateBar state={cycle.state} weekStartDate={cycle.weekStartDate} />
           </div>
@@ -64,7 +64,7 @@ export function ReconciliationPage() {
 
       {isReconciling ? (
         <div className="space-y-4">
-          <p className="text-gray-400 text-sm">
+          <p className="text-muted text-sm">
             Report your actual hours and completion status for each commitment.
           </p>
           {cycle.commits.map((commit) => (
@@ -78,9 +78,9 @@ export function ReconciliationPage() {
       ) : (
         <>
           {cycle.state === 'RECONCILED' ? (
-            <p className="text-gray-400 text-sm">This week has been reconciled.</p>
+            <p className="text-muted text-sm">This week has been reconciled.</p>
           ) : (
-            <p className="text-gray-400 text-sm">
+            <p className="text-muted text-sm">
               Transition to the RECONCILING state to start reconciling your commitments.
             </p>
           )}

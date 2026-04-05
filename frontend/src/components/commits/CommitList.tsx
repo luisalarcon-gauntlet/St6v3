@@ -29,7 +29,7 @@ export function CommitList({
 
   if (commits.length === 0) {
     return (
-      <div className="text-center py-12 text-gray-400">
+      <div className="text-center py-12 text-muted">
         <p className="text-lg">No commits yet</p>
         <p className="text-sm mt-1">Add your first weekly commitment above.</p>
       </div>

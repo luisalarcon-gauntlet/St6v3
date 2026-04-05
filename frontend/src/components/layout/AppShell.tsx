@@ -14,7 +14,7 @@ export function AppShell() {
     <div className="min-h-screen bg-background flex">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:bg-accent focus:text-primary focus:px-4 focus:py-2 focus:rounded"
       >
         Skip to content
       </a>

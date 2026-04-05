@@ -21,7 +21,7 @@ export function ReviewPanel({ cycle, onSubmitReview, submitting }: ReviewPanelPr
   if (!isReviewable || cycle.state === 'DRAFT') {
     return (
       <div className="bg-surface border border-border rounded-lg p-4">
-        <p className="text-gray-400 text-sm">Cannot review this cycle — it must be locked, reconciling, or reconciled.</p>
+        <p className="text-muted text-sm">Cannot review this cycle — it must be locked, reconciling, or reconciled.</p>
       </div>
     );
   }
@@ -31,7 +31,7 @@ export function ReviewPanel({ cycle, onSubmitReview, submitting }: ReviewPanelPr
       <div className="bg-surface border border-border rounded-lg p-4 space-y-4">
         <div>
           <p className="text-xs text-success font-medium uppercase tracking-wide">Already reviewed</p>
-          <p className="text-white text-sm mt-2">{cycle.reviewerNotes}</p>
+          <p className="text-primary text-sm mt-2">{cycle.reviewerNotes}</p>
         </div>
         <CommitSummary commits={activeCommits} />
       </div>
@@ -43,7 +43,7 @@ export function ReviewPanel({ cycle, onSubmitReview, submitting }: ReviewPanelPr
       <CommitSummary commits={activeCommits} />
 
       <div>
-        <label htmlFor="review-notes" className="block text-sm text-gray-400 mb-1">
+        <label htmlFor="review-notes" className="block text-sm text-muted mb-1">
           Review Notes
         </label>
         <textarea
@@ -51,7 +51,7 @@ export function ReviewPanel({ cycle, onSubmitReview, submitting }: ReviewPanelPr
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={4}
-          className="w-full bg-background border border-border rounded px-3 py-2 text-sm text-white placeholder:text-gray-600 focus:border-primary focus:outline-none transition-colors"
+          className="w-full bg-background border border-border rounded px-3 py-2 text-sm text-primary placeholder:text-muted/60 focus:border-accent focus:outline-none transition-colors"
           placeholder="Share feedback on this week's commitments..."
         />
       </div>
@@ -60,7 +60,7 @@ export function ReviewPanel({ cycle, onSubmitReview, submitting }: ReviewPanelPr
         type="button"
         disabled={notes.trim() === '' || submitting}
         onClick={() => setShowConfirm(true)}
-        className="px-4 py-2 text-sm text-white bg-primary hover:bg-blue-600 rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        className="px-4 py-2 text-sm text-primary bg-accent hover:bg-accent/80 rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {submitting ? 'Submitting...' : 'Submit Review'}
       </button>
@@ -84,11 +84,11 @@ export function ReviewPanel({ cycle, onSubmitReview, submitting }: ReviewPanelPr
 function CommitSummary({ commits }: { commits: WeeklyCycle['commits'] }) {
   return (
     <div className="space-y-2">
-      <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Commits</p>
+      <p className="text-xs text-muted uppercase tracking-wide font-medium">Commits</p>
       <ul className="space-y-1">
         {commits.map((commit) => (
           <li key={commit.id} className="flex items-center justify-between text-sm">
-            <span className="text-white truncate mr-3">{commit.title}</span>
+            <span className="text-primary truncate mr-3">{commit.title}</span>
             <StatusBadge status={commit.completionStatus} />
           </li>
         ))}
@@ -99,7 +99,7 @@ function CommitSummary({ commits }: { commits: WeeklyCycle['commits'] }) {
 
 function StatusBadge({ status }: { status: CompletionStatus }) {
   const styles: Record<CompletionStatus, string> = {
-    NOT_STARTED: 'text-gray-400',
+    NOT_STARTED: 'text-muted',
     IN_PROGRESS: 'text-warning',
     COMPLETED: 'text-success',
     CARRIED_FORWARD: 'text-primary',

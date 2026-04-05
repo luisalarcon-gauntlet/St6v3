@@ -7,10 +7,10 @@ export function UnauthorizedPage() {
     <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="text-center">
         <h1 className="text-4xl font-bold text-danger mb-4">403</h1>
-        <p className="text-gray-400 mb-6">You don't have permission to view this page.</p>
+        <p className="text-muted mb-6">You don't have permission to view this page.</p>
         <button
           onClick={() => navigate('/')}
-          className="bg-primary text-white rounded px-4 py-2 hover:bg-blue-600 transition-colors"
+          className="bg-accent text-primary rounded px-4 py-2 hover:bg-accent/80 transition-colors"
         >
           Go Home
         </button>

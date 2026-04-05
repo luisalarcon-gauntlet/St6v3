@@ -49,13 +49,13 @@ export function ReconcileForm({ commit, onReconcile }: ReconcileFormProps) {
     >
       <div className="flex items-center gap-2 mb-3">
         <ChessPieceIcon category={commit.chessCategory} />
-        <h2 className="text-white text-sm font-medium flex-1 truncate">{commit.title}</h2>
-        <span className="text-xs text-gray-400 font-mono">{commit.plannedHours}h planned</span>
+        <h2 className="text-primary text-sm font-medium flex-1 truncate">{commit.title}</h2>
+        <span className="text-xs text-muted font-mono">{commit.plannedHours}h planned</span>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor={`hours-${commit.id}`} className="block text-xs text-gray-400 mb-1">
+          <label htmlFor={`hours-${commit.id}`} className="block text-xs text-muted mb-1">
             Actual Hours
           </label>
           <input
@@ -66,18 +66,18 @@ export function ReconcileForm({ commit, onReconcile }: ReconcileFormProps) {
             step="0.5"
             value={actualHours}
             onChange={(e) => setActualHours(e.target.value)}
-            className="w-full bg-background border border-border rounded px-2 py-1.5 text-white text-sm focus:outline-none focus:border-primary transition-colors"
+            className="w-full bg-background border border-border rounded px-2 py-1.5 text-primary text-sm focus:outline-none focus:border-accent transition-colors"
           />
         </div>
         <div>
-          <label htmlFor={`status-${commit.id}`} className="block text-xs text-gray-400 mb-1">
+          <label htmlFor={`status-${commit.id}`} className="block text-xs text-muted mb-1">
             Status
           </label>
           <select
             id={`status-${commit.id}`}
             value={completionStatus}
             onChange={(e) => setCompletionStatus(e.target.value as CompletionStatus)}
-            className="w-full bg-background border border-border rounded px-2 py-1.5 text-white text-sm focus:outline-none focus:border-primary transition-colors"
+            className="w-full bg-background border border-border rounded px-2 py-1.5 text-primary text-sm focus:outline-none focus:border-accent transition-colors"
           >
             {STATUSES.map((s) => (
               <option key={s.value} value={s.value}>
@@ -89,7 +89,7 @@ export function ReconcileForm({ commit, onReconcile }: ReconcileFormProps) {
       </div>
 
       <div className="mt-3">
-        <label htmlFor={`notes-${commit.id}`} className="block text-xs text-gray-400 mb-1">
+        <label htmlFor={`notes-${commit.id}`} className="block text-xs text-muted mb-1">
           Notes
         </label>
         <textarea
@@ -97,7 +97,7 @@ export function ReconcileForm({ commit, onReconcile }: ReconcileFormProps) {
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={2}
-          className="w-full bg-background border border-border rounded px-2 py-1.5 text-white text-sm focus:outline-none focus:border-primary transition-colors resize-none"
+          className="w-full bg-background border border-border rounded px-2 py-1.5 text-primary text-sm focus:outline-none focus:border-accent transition-colors resize-none"
           placeholder="What happened this week?"
         />
       </div>
@@ -106,7 +106,7 @@ export function ReconcileForm({ commit, onReconcile }: ReconcileFormProps) {
         <button
           type="submit"
           disabled={saving}
-          className="bg-primary text-white text-xs px-3 py-1.5 rounded font-medium hover:bg-blue-600 transition-colors disabled:opacity-50"
+          className="bg-accent text-primary text-xs px-3 py-1.5 rounded font-medium hover:bg-accent/80 transition-colors disabled:opacity-50"
         >
           {saving ? 'Saving...' : 'Save'}
         </button>

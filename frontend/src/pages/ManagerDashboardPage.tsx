@@ -46,15 +46,15 @@ export function ManagerDashboardPage() {
     <div className="max-w-5xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Team Dashboard</h1>
-          <p className="text-gray-400 text-sm mt-1">Review your team's weekly commitments.</p>
+          <h1 className="text-2xl font-bold text-primary">Team Dashboard</h1>
+          <p className="text-muted text-sm mt-1">Review your team's weekly commitments.</p>
         </div>
 
         {selectedMember && (
           <button
             type="button"
             onClick={() => setSelectedMember(null)}
-            className="text-sm text-gray-400 hover:text-white transition-colors"
+            className="text-sm text-muted hover:text-primary transition-colors"
           >
             &larr; Back to team
           </button>
@@ -76,12 +76,12 @@ export function ManagerDashboardPage() {
       {selectedMember && !detailLoading && (
         <div className="space-y-6">
           <div className="bg-surface border border-border rounded-lg p-4">
-            <h2 className="text-white font-medium">{selectedMember.displayName}</h2>
-            <p className="text-gray-400 text-xs mt-0.5">{selectedMember.email}</p>
+            <h2 className="text-primary font-medium">{selectedMember.displayName}</h2>
+            <p className="text-muted text-xs mt-0.5">{selectedMember.email}</p>
             {selectedMember.currentCycle && (
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-muted mt-2">
                 Week of {selectedMember.currentCycle.weekStartDate} &middot;{' '}
-                <span className="text-primary">
+                <span className="text-accent">
                   {selectedMember.currentCycle.state.charAt(0) +
                     selectedMember.currentCycle.state.slice(1).toLowerCase()}
                 </span>
@@ -96,7 +96,7 @@ export function ManagerDashboardPage() {
               submitting={submitting}
             />
           ) : (
-            <div className="text-center py-12 text-gray-400">
+            <div className="text-center py-12 text-muted">
               <p className="text-sm">This member has no cycle for the current week.</p>
             </div>
           )}

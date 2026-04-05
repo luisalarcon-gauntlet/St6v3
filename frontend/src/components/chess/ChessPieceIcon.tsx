@@ -18,7 +18,7 @@ export function ChessPieceIcon({ category }: ChessPieceIconProps) {
   return (
     <span className="inline-flex items-center gap-1 text-sm" title={piece.label}>
       <span aria-hidden="true">{piece.icon}</span>
-      <span className="text-xs text-gray-400">{piece.label}</span>
+      <span className="text-xs text-muted">{piece.label}</span>
     </span>
   );
 }

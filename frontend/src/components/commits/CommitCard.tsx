@@ -12,19 +12,19 @@ export function CommitCard({ commit, rcdoTree, cycleState, onDelete }: CommitCar
   const outcomeName = findOutcomeName(rcdoTree, commit.outcomeId);
 
   return (
-    <article className="bg-surface border border-border rounded-lg p-4 transition-all duration-200 hover:border-gray-500">
+    <article className="bg-surface border border-border rounded-lg p-4 transition-all duration-200 hover:border-muted">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <ChessPieceIcon category={commit.chessCategory} />
-            <span className="text-sm font-mono text-gray-400">{commit.plannedHours}h</span>
+            <span className="text-sm font-mono text-muted">{commit.plannedHours}h</span>
           </div>
-          <h2 className="text-white text-sm font-medium truncate">{commit.title}</h2>
+          <h2 className="text-primary text-sm font-medium truncate">{commit.title}</h2>
           {commit.description && (
-            <p className="text-gray-400 text-xs mt-1 line-clamp-2">{commit.description}</p>
+            <p className="text-muted text-xs mt-1 line-clamp-2">{commit.description}</p>
           )}
           {outcomeName && (
-            <p className="text-xs text-primary/70 mt-1 truncate">{outcomeName}</p>
+            <p className="text-xs text-accent/70 mt-1 truncate">{outcomeName}</p>
           )}
         </div>
 
@@ -33,7 +33,7 @@ export function CommitCard({ commit, rcdoTree, cycleState, onDelete }: CommitCar
             type="button"
             aria-label="Delete"
             onClick={() => onDelete(commit.id)}
-            className="text-gray-500 hover:text-danger text-sm transition-colors shrink-0"
+            className="text-muted hover:text-danger text-sm transition-colors shrink-0"
           >
             &times;
           </button>

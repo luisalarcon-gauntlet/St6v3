@@ -42,22 +42,22 @@ export function ConfirmDialog({
       aria-labelledby="confirm-dialog-title"
     >
       <div className="bg-surface border border-border rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl transition-transform duration-200">
-        <h2 id="confirm-dialog-title" className="text-white font-medium text-lg">
+        <h2 id="confirm-dialog-title" className="text-primary font-medium text-lg">
           {title}
         </h2>
-        <p className="text-gray-400 text-sm mt-2">{message}</p>
+        <p className="text-muted text-sm mt-2">{message}</p>
         <div className="flex justify-end gap-3 mt-6">
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 text-sm text-gray-400 hover:text-white border border-border rounded transition-colors"
+            className="px-4 py-2 text-sm text-muted hover:text-primary border border-border rounded transition-colors"
           >
             {cancelLabel}
           </button>
           <button
             type="button"
             onClick={onConfirm}
-            className="px-4 py-2 text-sm text-white bg-danger hover:bg-red-600 rounded transition-colors"
+            className="px-4 py-2 text-sm text-primary bg-danger hover:bg-danger/80 rounded transition-colors"
           >
             {confirmLabel}
           </button>

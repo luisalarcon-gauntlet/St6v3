@@ -1,4 +1,5 @@
 import type { CycleState } from '@/types/domain';
+import { CYCLE_STATE_STYLES } from '@/constants/styles';
 
 interface StateTransitionButtonProps {
   cycleState: CycleState;
@@ -18,19 +19,19 @@ export function StateTransitionButton({
   if (cycleState === 'RECONCILED') return null;
 
   const config = {
-    DRAFT: { label: 'Lock Plan', onClick: onLock, className: 'bg-warning hover:bg-amber-600' },
-    LOCKED: { label: 'Start Reconciliation', onClick: onStartReconciliation, className: 'bg-purple-500 hover:bg-purple-600' },
-    RECONCILING: { label: 'Complete Reconciliation', onClick: onReconcile, className: 'bg-success hover:bg-emerald-600' },
+    DRAFT: { label: 'Lock Plan', onClick: onLock },
+    LOCKED: { label: 'Start Reconciliation', onClick: onStartReconciliation },
+    RECONCILING: { label: 'Complete Reconciliation', onClick: onReconcile },
   } as const;
 
-  const { label, onClick, className } = config[cycleState];
+  const { label, onClick } = config[cycleState];
 
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`${className} text-white text-sm px-4 py-2 rounded font-medium transition-colors disabled:opacity-50`}
+      className={`${CYCLE_STATE_STYLES[cycleState].button} text-primary text-sm px-4 py-2 rounded font-medium transition-colors disabled:opacity-50`}
     >
       {label}
     </button>

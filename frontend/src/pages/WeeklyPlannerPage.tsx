@@ -66,7 +66,7 @@ export function WeeklyPlannerPage() {
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Weekly Planner</h1>
+          <h1 className="text-2xl font-bold text-primary">Weekly Planner</h1>
           <div className="mt-1">
             <WeekStateBar state={cycle.state} weekStartDate={cycle.weekStartDate} />
           </div>

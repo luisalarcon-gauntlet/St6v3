@@ -1,4 +1,5 @@
-import type { TeamMemberOverview } from '@/types/domain';
+import type { TeamMemberOverview, CycleState } from '@/types/domain';
+import { CYCLE_STATE_STYLES } from '@/constants/styles';
 
 interface TeamMemberCardProps {
   member: TeamMemberOverview;
@@ -13,7 +14,7 @@ export function TeamMemberCard({ member, onSelect }: TeamMemberCardProps) {
 
   return (
     <div
-      className="bg-surface border border-border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:border-gray-500 focus:outline-none focus:border-primary"
+      className="bg-surface border border-border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:border-muted focus:outline-none focus:border-accent"
       role="button"
       tabIndex={0}
       aria-label={`View ${member.displayName}'s weekly commitments`}
@@ -27,8 +28,8 @@ export function TeamMemberCard({ member, onSelect }: TeamMemberCardProps) {
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <h2 className="text-white text-sm font-medium truncate">{member.displayName}</h2>
-          <p className="text-gray-400 text-xs mt-0.5">{member.email}</p>
+          <h2 className="text-primary text-sm font-medium truncate">{member.displayName}</h2>
+          <p className="text-muted text-xs mt-0.5">{member.email}</p>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
@@ -40,13 +41,13 @@ export function TeamMemberCard({ member, onSelect }: TeamMemberCardProps) {
           {cycle ? (
             <CycleStateBadge state={cycle.state} />
           ) : (
-            <span className="text-xs text-gray-500">No cycle</span>
+            <span className="text-xs text-muted">No cycle</span>
           )}
         </div>
       </div>
 
       {cycle && (
-        <div className="flex items-center gap-4 mt-3 text-xs text-gray-400">
+        <div className="flex items-center gap-4 mt-3 text-xs text-muted">
           <span>{commitCount} commits</span>
           <span>{totalPlannedHours}h planned</span>
         </div>
@@ -55,16 +56,9 @@ export function TeamMemberCard({ member, onSelect }: TeamMemberCardProps) {
   );
 }
 
-function CycleStateBadge({ state }: { state: string }) {
-  const styles: Record<string, string> = {
-    DRAFT: 'bg-gray-500/10 text-gray-400',
-    LOCKED: 'bg-primary/10 text-primary',
-    RECONCILING: 'bg-warning/10 text-warning',
-    RECONCILED: 'bg-success/10 text-success',
-  };
-
+function CycleStateBadge({ state }: { state: CycleState }) {
   return (
-    <span className={`text-xs px-2 py-0.5 rounded ${styles[state] ?? ''}`}>
+    <span className={`text-xs px-2 py-0.5 rounded border ${CYCLE_STATE_STYLES[state].badge}`}>
       {state.charAt(0) + state.slice(1).toLowerCase()}
     </span>
   );

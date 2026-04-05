@@ -27,7 +27,7 @@ export function ChessPiecePicker({ value, onChange, disabledPieces = [] }: Chess
             className={`
               flex items-center gap-1.5 px-3 py-1.5 rounded border text-sm cursor-pointer
               transition-colors select-none
-              ${isSelected ? 'border-primary bg-primary/10 text-primary' : 'border-border text-gray-400 hover:border-gray-500'}
+              ${isSelected ? 'border-accent bg-accent/10 text-accent' : 'border-border text-muted hover:border-muted'}
               ${isDisabled ? 'opacity-40 cursor-not-allowed' : ''}
             `}
           >
