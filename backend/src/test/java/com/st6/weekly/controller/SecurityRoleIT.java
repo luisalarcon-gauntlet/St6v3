@@ -69,17 +69,16 @@ class SecurityRoleIT {
 
     @Test
     void manager_can_access_manager_endpoints() throws Exception {
-        // Returns 404 because the controller doesn't exist yet, but NOT 403
         mockMvc.perform(get("/api/v1/manager/team")
                         .cookie(managerCookie))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk());
     }
 
     @Test
     void admin_can_access_manager_endpoints() throws Exception {
         mockMvc.perform(get("/api/v1/manager/team")
                         .cookie(adminCookie))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk());
     }
 
     @Test
