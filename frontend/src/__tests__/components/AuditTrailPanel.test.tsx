@@ -2,7 +2,6 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { server } from '../mocks/server';
 import { AuditTrailPanel } from '@/components/manager/AuditTrailPanel';
-import { mockAuditPage } from '../mocks/handlers';
 
 describe('AuditTrailPanel', () => {
   test('renders audit entries with actor names and actions', async () => {

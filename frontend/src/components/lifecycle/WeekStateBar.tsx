@@ -1,5 +1,5 @@
 import type { CycleState } from '@/types/domain';
-import { CYCLE_STATE_STYLES } from '@/constants/styles';
+import { getCycleStateStyle } from '@/constants/styles';
 
 interface WeekStateBarProps {
   state: CycleState;
@@ -18,7 +18,7 @@ export function WeekStateBar({ state, weekStartDate }: WeekStateBarProps) {
         Week of {formatWeekDate(weekStartDate)}
       </span>
       <span
-        className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-semibold uppercase tracking-wide border ${CYCLE_STATE_STYLES[state].badge}`}
+        className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-semibold uppercase tracking-wide border ${getCycleStateStyle(state).badge}`}
       >
         {state}
       </span>

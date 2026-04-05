@@ -1,6 +1,6 @@
 import type { ChessCategory, WeeklyCommit } from '@/types/domain';
 import { ChessPieceIcon } from '@/components/chess/ChessPieceIcon';
-import { CHESS_STYLES } from '@/constants/styles';
+import { getChessStyle } from '@/constants/styles';
 
 const ALL_PIECES: ChessCategory[] = ['KING', 'QUEEN', 'ROOK', 'BISHOP', 'KNIGHT', 'PAWN'];
 
@@ -25,7 +25,7 @@ export function ChessDistribution({ commits }: ChessDistributionProps) {
       <div className="grid grid-cols-3 gap-2">
         {ALL_PIECES.map((cat) => {
           const count = counts[cat];
-          const style = CHESS_STYLES[cat];
+          const style = getChessStyle(cat);
           return (
             <div
               key={cat}

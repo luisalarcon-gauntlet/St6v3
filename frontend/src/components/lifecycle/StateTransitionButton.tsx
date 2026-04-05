@@ -1,5 +1,5 @@
 import type { CycleState } from '@/types/domain';
-import { CYCLE_STATE_STYLES } from '@/constants/styles';
+import { getCycleStateStyle } from '@/constants/styles';
 
 interface StateTransitionButtonProps {
   cycleState: CycleState;
@@ -31,7 +31,7 @@ export function StateTransitionButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`${CYCLE_STATE_STYLES[cycleState].button} text-primary text-sm px-4 py-2 rounded font-medium transition-colors disabled:opacity-50`}
+      className={`${getCycleStateStyle(cycleState).button} text-primary text-sm px-4 py-2 rounded font-medium transition-colors disabled:opacity-50`}
     >
       {label}
     </button>

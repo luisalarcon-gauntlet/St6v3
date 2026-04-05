@@ -1,5 +1,5 @@
 import type { TeamMemberOverview, CycleState } from '@/types/domain';
-import { CYCLE_STATE_STYLES } from '@/constants/styles';
+import { getCycleStateStyle } from '@/constants/styles';
 
 interface TeamMemberCardProps {
   member: TeamMemberOverview;
@@ -58,7 +58,7 @@ export function TeamMemberCard({ member, onSelect }: TeamMemberCardProps) {
 
 function CycleStateBadge({ state }: { state: CycleState }) {
   return (
-    <span className={`text-xs px-2 py-0.5 rounded border ${CYCLE_STATE_STYLES[state].badge}`}>
+    <span className={`text-xs px-2 py-0.5 rounded border ${getCycleStateStyle(state).badge}`}>
       {state.charAt(0) + state.slice(1).toLowerCase()}
     </span>
   );

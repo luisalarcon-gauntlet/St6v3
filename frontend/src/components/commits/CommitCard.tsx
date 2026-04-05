@@ -1,6 +1,6 @@
 import type { WeeklyCommit, CycleState, RallyCry } from '@/types/domain';
 import { ChessPieceIcon } from '@/components/chess/ChessPieceIcon';
-import { CHESS_STYLES, COMPLETION_STATUS_STYLES } from '@/constants/styles';
+import { getChessStyle, getCompletionStatusStyle } from '@/constants/styles';
 
 interface CommitCardProps {
   commit: WeeklyCommit;
@@ -12,8 +12,8 @@ interface CommitCardProps {
 
 export function CommitCard({ commit, rcdoTree, cycleState, onDelete, index = 0 }: CommitCardProps) {
   const outcomeName = findOutcomeName(rcdoTree, commit.outcomeId);
-  const chess = CHESS_STYLES[commit.chessCategory];
-  const status = COMPLETION_STATUS_STYLES[commit.completionStatus];
+  const chess = getChessStyle(commit.chessCategory);
+  const status = getCompletionStatusStyle(commit.completionStatus);
 
   return (
     <article

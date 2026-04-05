@@ -47,6 +47,12 @@ export const COMPLETION_STATUS_STYLES = {
   DROPPED: { label: 'Dropped', badge: 'bg-danger/10 text-danger border-danger/20' },
 } as const satisfies Record<CompletionStatus, { label: string; badge: string }>;
 
+const COMPLETION_STATUS_FALLBACK = { label: 'Unknown', badge: 'bg-muted/10 text-muted border-muted/20' } as const;
+
+export function getCompletionStatusStyle(status: string | null | undefined) {
+  return COMPLETION_STATUS_STYLES[status as CompletionStatus] ?? COMPLETION_STATUS_FALLBACK;
+}
+
 export const CYCLE_STATE_STYLES = {
   DRAFT: {
     badge: 'bg-draft/20 text-draft border-draft/30',
@@ -69,3 +75,15 @@ export const CYCLE_STATE_STYLES = {
     text: 'text-reconciled',
   },
 } as const satisfies Record<CycleState, { badge: string; button: string; text: string }>;
+
+const CYCLE_STATE_FALLBACK = { badge: 'bg-muted/20 text-muted border-muted/30', button: 'bg-muted hover:bg-muted/80', text: 'text-muted' } as const;
+
+export function getCycleStateStyle(state: string | null | undefined) {
+  return CYCLE_STATE_STYLES[state as CycleState] ?? CYCLE_STATE_FALLBACK;
+}
+
+const CHESS_FALLBACK = { border: 'border-l-4 border-l-muted', card: '', pill: 'bg-muted/15 text-muted', color: '#a89f96' } as const;
+
+export function getChessStyle(category: string | null | undefined) {
+  return CHESS_STYLES[category as ChessCategory] ?? CHESS_FALLBACK;
+}
