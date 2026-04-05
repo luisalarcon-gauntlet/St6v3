@@ -263,6 +263,24 @@ class CycleServiceTest {
                 .hasMessageContaining("completion_status");
     }
 
+    @Test
+    void reconcile_succeeds_when_commit_is_dropped() {
+        WeeklyCycle cycle = buildCycle(CycleState.RECONCILING);
+        List<WeeklyCommit> commits = new ArrayList<>();
+        WeeklyCommit c1 = buildCommit(cycle, ChessCategory.KING);
+        c1.setCompletionStatus(CompletionStatus.DROPPED);
+        commits.add(c1);
+        cycle.setCommits(commits);
+
+        when(cycleRepository.findByIdWithCommits(cycle.getId())).thenReturn(Optional.of(cycle));
+        when(cycleRepository.save(any(WeeklyCycle.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        WeeklyCycle result = cycleService.reconcile(cycle.getId(), userId);
+
+        assertThat(result.getState()).isEqualTo(CycleState.RECONCILED);
+        assertThat(result.getReconciledAt()).isNotNull();
+    }
+
     // --- getCycles (paginated) ---
 
     @Test

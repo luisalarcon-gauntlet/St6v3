@@ -45,10 +45,17 @@ public class CycleStateMachine {
         }
     }
 
+    private static final Set<CompletionStatus> RESOLVED_STATUSES = Set.of(
+            CompletionStatus.COMPLETED,
+            CompletionStatus.IN_PROGRESS,
+            CompletionStatus.CARRIED_FORWARD,
+            CompletionStatus.DROPPED
+    );
+
     private void validateReconcile(TransitionContext ctx) {
-        boolean allSet = ctx.completionStatuses().stream()
-                .allMatch(s -> s != null);
-        if (!allSet) {
+        boolean allResolved = ctx.completionStatuses().stream()
+                .allMatch(s -> s != null && RESOLVED_STATUSES.contains(s));
+        if (!allResolved) {
             throw new IllegalStateException(
                     "Cannot reconcile: all commits must have completion_status set");
         }
