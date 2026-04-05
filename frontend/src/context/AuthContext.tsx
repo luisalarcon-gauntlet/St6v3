@@ -6,7 +6,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import client from '@/api/client';
+import client, { isAxiosError } from '@/api/client';
 import type { User } from '@/types/domain';
 import type { LoginRequest } from '@/types/api';
 
@@ -30,8 +30,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .then((res) => {
         if (!cancelled) setUser(res.data);
       })
-      .catch(() => {
-        if (!cancelled) setUser(null);
+      .catch((error: unknown) => {
+        if (!cancelled) {
+          if (isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
+            setUser(null);
+          } else {
+            setUser(null);
+          }
+        }
       })
       .finally(() => {
         if (!cancelled) setLoading(false);

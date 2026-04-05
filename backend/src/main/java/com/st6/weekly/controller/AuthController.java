@@ -13,6 +13,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.time.Duration;
 
 @RestController
@@ -25,14 +28,18 @@ public class AuthController {
     @Value("${app.jwt.expiration-ms}")
     private long jwtExpirationMs;
 
+    @Value("${spring.profiles.active:}")
+    private String activeProfile;
+
     @PostMapping("/login")
     public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest request) {
         AuthService.LoginResult result = authService.login(request.email(), request.password());
 
+        boolean isSecure = !activeProfile.contains("dev");
         ResponseCookie cookie = ResponseCookie.from("st6_token", result.token())
                 .httpOnly(true)
-                .secure(true)
-                .sameSite("Strict")
+                .secure(isSecure)
+                .sameSite("Lax")
                 .path("/")
                 .maxAge(Duration.ofMillis(jwtExpirationMs))
                 .build();
@@ -44,16 +51,20 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> me(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authentication required");
+        }
         UserResponse user = authService.getCurrentUser(userDetails.getUsername());
         return ResponseEntity.ok(user);
     }
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout() {
+        boolean isSecure = !activeProfile.contains("dev");
         ResponseCookie cookie = ResponseCookie.from("st6_token", "")
                 .httpOnly(true)
-                .secure(true)
-                .sameSite("Strict")
+                .secure(isSecure)
+                .sameSite("Lax")
                 .path("/")
                 .maxAge(0)
                 .build();

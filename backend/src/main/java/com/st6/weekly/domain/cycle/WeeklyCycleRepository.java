@@ -13,6 +13,7 @@ import java.util.UUID;
 
 public interface WeeklyCycleRepository extends JpaRepository<WeeklyCycle, UUID> {
 
+    @EntityGraph(attributePaths = {"commits"})
     Optional<WeeklyCycle> findByUserIdAndWeekStartDate(UUID userId, LocalDate weekStartDate);
 
     @EntityGraph(attributePaths = {"commits"})
