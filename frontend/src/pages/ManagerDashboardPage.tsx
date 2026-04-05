@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { TeamGrid } from '@/components/manager/TeamGrid';
 import { ReviewPanel } from '@/components/manager/ReviewPanel';
+import { AuditTrailPanel } from '@/components/manager/AuditTrailPanel';
 import { RegressionConfirmDialog } from '@/components/shared/RegressionConfirmDialog';
 import { getTeamMemberDetail, submitReview } from '@/api/manager';
 import { regressCycle } from '@/api/cycles';
@@ -140,11 +141,14 @@ export function ManagerDashboardPage() {
           </div>
 
           {selectedMember.currentCycle ? (
-            <ReviewPanel
-              cycle={selectedMember.currentCycle}
-              onSubmitReview={handleSubmitReview}
-              submitting={submitting}
-            />
+            <>
+              <ReviewPanel
+                cycle={selectedMember.currentCycle}
+                onSubmitReview={handleSubmitReview}
+                submitting={submitting}
+              />
+              <AuditTrailPanel cycleId={selectedMember.currentCycle.id} />
+            </>
           ) : (
             <div className="text-center py-12 text-muted">
               <p className="text-sm">This member has no cycle for the current week.</p>

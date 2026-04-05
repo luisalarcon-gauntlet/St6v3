@@ -3,6 +3,7 @@ package com.st6.weekly.controller;
 import com.st6.weekly.domain.user.User;
 import com.st6.weekly.domain.user.UserRepository;
 import com.st6.weekly.dto.request.ReviewRequest;
+import com.st6.weekly.dto.response.AuditLogResponse;
 import com.st6.weekly.dto.response.CycleResponse;
 import com.st6.weekly.dto.response.TeamOverviewResponse;
 import com.st6.weekly.service.ManagerService;
@@ -39,6 +40,15 @@ public class ManagerController {
             @AuthenticationPrincipal UserDetails userDetails) {
         UUID managerId = resolveUserId(userDetails);
         return ResponseEntity.ok(managerService.getTeamMemberDetail(managerId, userId));
+    }
+
+    @GetMapping("/cycles/{cycleId}/audit")
+    public ResponseEntity<Page<AuditLogResponse>> getCycleAudit(
+            @PathVariable UUID cycleId,
+            @AuthenticationPrincipal UserDetails userDetails,
+            Pageable pageable) {
+        UUID managerId = resolveUserId(userDetails);
+        return ResponseEntity.ok(managerService.getCycleAudit(managerId, cycleId, pageable));
     }
 
     @PostMapping("/reviews/{cycleId}")

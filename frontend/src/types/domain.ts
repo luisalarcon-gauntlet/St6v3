@@ -83,3 +83,14 @@ export interface TeamMemberOverview {
   displayName: string;
   currentCycle: WeeklyCycle | null;
 }
+
+export interface AuditLogEntry {
+  id: string;
+  entityType: string;
+  entityId: string;
+  action: string;
+  actorId: string | null;
+  actorDisplayName: string | null;
+  details: Record<string, string> | null;
+  createdAt: string;
+}

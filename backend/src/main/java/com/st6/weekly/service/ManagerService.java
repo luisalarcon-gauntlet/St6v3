@@ -1,10 +1,13 @@
 package com.st6.weekly.service;
 
+import com.st6.weekly.domain.audit.AuditLog;
+import com.st6.weekly.domain.audit.AuditLogRepository;
 import com.st6.weekly.domain.cycle.WeeklyCycle;
 import com.st6.weekly.domain.cycle.WeeklyCycleRepository;
 import com.st6.weekly.domain.user.Role;
 import com.st6.weekly.domain.user.User;
 import com.st6.weekly.domain.user.UserRepository;
+import com.st6.weekly.dto.response.AuditLogResponse;
 import com.st6.weekly.dto.response.CycleResponse;
 import com.st6.weekly.dto.response.TeamOverviewResponse;
 import com.st6.weekly.exception.ResourceNotFoundException;
@@ -31,6 +34,7 @@ public class ManagerService {
 
     private final UserRepository userRepository;
     private final WeeklyCycleRepository cycleRepository;
+    private final AuditLogRepository auditLogRepository;
     private final InputSanitizer inputSanitizer;
 
     @Transactional(readOnly = true)
@@ -94,6 +98,39 @@ public class ManagerService {
         cycle.setUpdatedAt(Instant.now());
 
         return CycleResponse.from(cycleRepository.save(cycle));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AuditLogResponse> getCycleAudit(UUID managerId, UUID cycleId, Pageable pageable) {
+        verifyManagerRole(managerId);
+
+        WeeklyCycle cycle = cycleRepository.findById(cycleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cycle not found: " + cycleId));
+
+        User cycleOwner = userRepository.findById(cycle.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("Cycle owner not found"));
+        if (!managerId.equals(cycleOwner.getManagerId())) {
+            throw new ResourceNotFoundException("Cycle not found: " + cycleId);
+        }
+
+        Page<AuditLog> audits = auditLogRepository.findByEntityTypeAndEntityId(
+                "WEEKLY_CYCLE", cycleId, pageable);
+
+        Map<UUID, String> actorNames = audits.getContent().stream()
+                .map(AuditLog::getActorId)
+                .filter(id -> id != null)
+                .distinct()
+                .collect(Collectors.toMap(
+                        Function.identity(),
+                        id -> userRepository.findById(id)
+                                .map(User::getDisplayName)
+                                .orElse("Unknown")
+                ));
+
+        return audits.map(log -> AuditLogResponse.from(
+                log,
+                log.getActorId() != null ? actorNames.get(log.getActorId()) : null
+        ));
     }
 
     private void verifyManagerRole(UUID userId) {
