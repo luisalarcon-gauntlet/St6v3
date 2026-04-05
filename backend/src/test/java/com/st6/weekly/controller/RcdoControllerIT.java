@@ -22,8 +22,7 @@ import java.util.UUID;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -39,6 +38,7 @@ class RcdoControllerIT {
     @Autowired private ObjectMapper objectMapper;
 
     private Cookie memberCookie;
+    private Cookie managerCookie;
     private Cookie adminCookie;
 
     @BeforeEach
@@ -55,9 +55,11 @@ class RcdoControllerIT {
         jdbcTemplate.execute("DELETE FROM rally_cries");
 
         createUser("bob@st6.com", "Bob Martinez", Role.MEMBER);
+        createUser("alice@st6.com", "Alice Chen", Role.MANAGER);
         createUser("dave@st6.com", "Dave Kim", Role.ADMIN);
 
         memberCookie = login("bob@st6.com");
+        managerCookie = login("alice@st6.com");
         adminCookie = login("dave@st6.com");
 
         rateLimitConfig.clearBuckets();
@@ -235,7 +237,228 @@ class RcdoControllerIT {
                 .andExpect(jsonPath("$.status").value("ACTIVE"));
     }
 
+    // --- PUT /api/v1/rally-cries/{id} ---
+
+    @Test
+    void update_rally_cry_requires_admin_role_member_forbidden() throws Exception {
+        UUID rcId = insertRallyCry("Original RC");
+
+        mockMvc.perform(put("/api/v1/rally-cries/" + rcId)
+                        .cookie(memberCookie)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"title": "Updated RC", "description": "Updated"}
+                                """)
+                        .with(csrf()))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void update_rally_cry_requires_admin_role_manager_forbidden() throws Exception {
+        UUID rcId = insertRallyCry("Original RC");
+
+        mockMvc.perform(put("/api/v1/rally-cries/" + rcId)
+                        .cookie(managerCookie)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"title": "Updated RC", "description": "Updated"}
+                                """)
+                        .with(csrf()))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void admin_can_update_rally_cry() throws Exception {
+        UUID rcId = insertRallyCry("Original RC");
+
+        mockMvc.perform(put("/api/v1/rally-cries/" + rcId)
+                        .cookie(adminCookie)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"title": "Updated Rally Cry", "description": "New description"}
+                                """)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Updated Rally Cry"))
+                .andExpect(jsonPath("$.description").value("New description"));
+    }
+
+    // --- DELETE /api/v1/rally-cries/{id} ---
+
+    @Test
+    void archive_rally_cry_requires_admin_role_member_forbidden() throws Exception {
+        UUID rcId = insertRallyCry("RC to archive");
+
+        mockMvc.perform(delete("/api/v1/rally-cries/" + rcId)
+                        .cookie(memberCookie)
+                        .with(csrf()))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void archive_rally_cry_requires_admin_role_manager_forbidden() throws Exception {
+        UUID rcId = insertRallyCry("RC to archive");
+
+        mockMvc.perform(delete("/api/v1/rally-cries/" + rcId)
+                        .cookie(managerCookie)
+                        .with(csrf()))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void admin_can_archive_rally_cry() throws Exception {
+        UUID rcId = insertRallyCry("RC to archive");
+
+        mockMvc.perform(delete("/api/v1/rally-cries/" + rcId)
+                        .cookie(adminCookie)
+                        .with(csrf()))
+                .andExpect(status().isNoContent());
+
+        // Verify it no longer appears in active tree
+        mockMvc.perform(get("/api/v1/rcdo/tree")
+                        .cookie(adminCookie))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    // --- PUT /api/v1/defining-objectives/{id} ---
+
+    @Test
+    void admin_can_update_defining_objective() throws Exception {
+        UUID rcId = insertRallyCry("Test RC");
+        UUID doId = insertDefiningObjective(rcId, "Original DO");
+
+        mockMvc.perform(put("/api/v1/defining-objectives/" + doId)
+                        .cookie(adminCookie)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"title": "Updated DO", "description": "New description"}
+                                """)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Updated DO"));
+    }
+
+    @Test
+    void update_defining_objective_manager_forbidden() throws Exception {
+        UUID rcId = insertRallyCry("Test RC");
+        UUID doId = insertDefiningObjective(rcId, "Original DO");
+
+        mockMvc.perform(put("/api/v1/defining-objectives/" + doId)
+                        .cookie(managerCookie)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"title": "Updated DO", "description": "New description"}
+                                """)
+                        .with(csrf()))
+                .andExpect(status().isForbidden());
+    }
+
+    // --- DELETE /api/v1/defining-objectives/{id} ---
+
+    @Test
+    void admin_can_archive_defining_objective() throws Exception {
+        UUID rcId = insertRallyCry("Test RC");
+        UUID doId = insertDefiningObjective(rcId, "DO to archive");
+
+        mockMvc.perform(delete("/api/v1/defining-objectives/" + doId)
+                        .cookie(adminCookie)
+                        .with(csrf()))
+                .andExpect(status().isNoContent());
+    }
+
+    // --- PUT /api/v1/outcomes/{id} ---
+
+    @Test
+    void admin_can_update_outcome() throws Exception {
+        UUID rcId = insertRallyCry("Test RC");
+        UUID doId = insertDefiningObjective(rcId, "Test DO");
+        UUID outcomeId = insertOutcome(doId, "Original Outcome");
+
+        mockMvc.perform(put("/api/v1/outcomes/" + outcomeId)
+                        .cookie(adminCookie)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"title": "Updated Outcome", "description": "New description"}
+                                """)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Updated Outcome"));
+    }
+
+    @Test
+    void update_outcome_member_forbidden() throws Exception {
+        UUID rcId = insertRallyCry("Test RC");
+        UUID doId = insertDefiningObjective(rcId, "Test DO");
+        UUID outcomeId = insertOutcome(doId, "Original Outcome");
+
+        mockMvc.perform(put("/api/v1/outcomes/" + outcomeId)
+                        .cookie(memberCookie)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"title": "Updated Outcome", "description": "New description"}
+                                """)
+                        .with(csrf()))
+                .andExpect(status().isForbidden());
+    }
+
+    // --- DELETE /api/v1/outcomes/{id} ---
+
+    @Test
+    void admin_can_archive_outcome() throws Exception {
+        UUID rcId = insertRallyCry("Test RC");
+        UUID doId = insertDefiningObjective(rcId, "Test DO");
+        UUID outcomeId = insertOutcome(doId, "Outcome to archive");
+
+        mockMvc.perform(delete("/api/v1/outcomes/" + outcomeId)
+                        .cookie(adminCookie)
+                        .with(csrf()))
+                .andExpect(status().isNoContent());
+    }
+
+    // --- GET /api/v1/rcdo/tree?includeArchived=true ---
+
+    @Test
+    void tree_with_include_archived_returns_archived_items() throws Exception {
+        insertRallyCry("Active RC");
+        UUID archivedId = UUID.randomUUID();
+        jdbcTemplate.update(
+                "INSERT INTO rally_cries (id, title, description, status, display_order) VALUES (?, ?, ?, ?, ?)",
+                archivedId, "Archived RC", "Archived", "ARCHIVED", 2);
+
+        mockMvc.perform(get("/api/v1/rcdo/tree")
+                        .param("includeArchived", "true")
+                        .cookie(memberCookie))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
+    }
+
     // --- Helpers ---
+
+    private UUID insertRallyCry(String title) {
+        UUID id = UUID.randomUUID();
+        jdbcTemplate.update(
+                "INSERT INTO rally_cries (id, title, description, status, display_order) VALUES (?, ?, ?, ?, ?)",
+                id, title, title, "ACTIVE", 1);
+        return id;
+    }
+
+    private UUID insertDefiningObjective(UUID rallyCryId, String title) {
+        UUID id = UUID.randomUUID();
+        jdbcTemplate.update(
+                "INSERT INTO defining_objectives (id, rally_cry_id, title, description, status) VALUES (?, ?, ?, ?, ?)",
+                id, rallyCryId, title, title, "ACTIVE");
+        return id;
+    }
+
+    private UUID insertOutcome(UUID definingObjectiveId, String title) {
+        UUID id = UUID.randomUUID();
+        jdbcTemplate.update(
+                "INSERT INTO outcomes (id, defining_objective_id, title, description, status) VALUES (?, ?, ?, ?, ?)",
+                id, definingObjectiveId, title, title, "ACTIVE");
+        return id;
+    }
+
 
     private void createUser(String email, String name, Role role) {
         User user = new User();

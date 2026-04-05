@@ -9,6 +9,7 @@ import { WeeklyPlannerPage } from '@/pages/WeeklyPlannerPage';
 import { ReconciliationPage } from '@/pages/ReconciliationPage';
 import { HistoryPage } from '@/pages/HistoryPage';
 import { ManagerDashboardPage } from '@/pages/ManagerDashboardPage';
+import { RCDOAdminPage } from '@/pages/RCDOAdminPage';
 
 function App() {
   return (
@@ -40,6 +41,17 @@ function App() {
               }
             >
               <Route index element={<ManagerDashboardPage />} />
+            </Route>
+
+            <Route
+              path="admin/rcdo"
+              element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AppShell />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<RCDOAdminPage />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/login" replace />} />

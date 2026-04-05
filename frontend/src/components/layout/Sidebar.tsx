@@ -13,6 +13,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/reconcile', label: 'Reconciliation', icon: '\u2713', roles: ['MEMBER', 'MANAGER', 'ADMIN'] },
   { to: '/history', label: 'History', icon: '\u25F7', roles: ['MEMBER', 'MANAGER', 'ADMIN'] },
   { to: '/team', label: 'Team Dashboard', icon: '\u2981', roles: ['MANAGER', 'ADMIN'] },
+  { to: '/admin/rcdo', label: 'RCDO Admin', icon: '\u2699', roles: ['ADMIN'] },
 ];
 
 function getInitials(name: string): string {

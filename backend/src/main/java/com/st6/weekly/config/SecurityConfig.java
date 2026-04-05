@@ -40,7 +40,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register", "/api/v1/auth/me").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/api/v1/manager/**").hasAnyRole("MANAGER", "ADMIN")
-                        .requestMatchers("/api/v1/rally-cries", "/api/v1/defining-objectives", "/api/v1/outcomes")
+                        .requestMatchers("/api/v1/rally-cries", "/api/v1/rally-cries/**",
+                                "/api/v1/defining-objectives", "/api/v1/defining-objectives/**",
+                                "/api/v1/outcomes", "/api/v1/outcomes/**")
                             .hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

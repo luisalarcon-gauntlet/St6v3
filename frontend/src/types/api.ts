@@ -37,6 +37,29 @@ export interface RegressCycleRequest {
   reason: string;
 }
 
+export interface CreateRallyCryRequest {
+  title: string;
+  description: string;
+}
+
+export interface CreateDefiningObjectiveRequest {
+  rallyCryId: string;
+  title: string;
+  description: string;
+}
+
+export interface CreateOutcomeRequest {
+  definingObjectiveId: string;
+  title: string;
+  description: string;
+}
+
+export interface UpdateRcdoRequest {
+  title: string;
+  description: string;
+  status?: string;
+}
+
 export interface PageResponse<T> {
   content: T[];
   totalElements: number;

@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import type { WeeklyCycle, WeeklyCommit, RallyCry, TeamMemberOverview } from '@/types/domain';
+import type { AuditLogEntry, WeeklyCycle, WeeklyCommit, RallyCry, TeamMemberOverview } from '@/types/domain';
 
 // --- Mock data ---
 
@@ -180,6 +180,37 @@ export const mockTeamMemberNoCycle: TeamMemberOverview = {
   currentCycle: null,
 };
 
+export const mockAuditEntries: AuditLogEntry[] = [
+  {
+    id: 'audit-1',
+    entityType: 'WEEKLY_CYCLE',
+    entityId: 'cycle-bob',
+    action: 'REGRESSED',
+    actorId: 'user-alice',
+    actorDisplayName: 'Alice Chen',
+    details: { previous_state: 'LOCKED', new_state: 'DRAFT', reason: 'Needs to re-plan commitments' },
+    createdAt: '2026-04-03T14:30:00Z',
+  },
+  {
+    id: 'audit-2',
+    entityType: 'WEEKLY_CYCLE',
+    entityId: 'cycle-bob',
+    action: 'LOCKED',
+    actorId: 'user-bob',
+    actorDisplayName: 'Bob Martinez',
+    details: { previous_state: 'DRAFT', new_state: 'LOCKED' },
+    createdAt: '2026-04-02T09:00:00Z',
+  },
+];
+
+export const mockAuditPage = {
+  content: mockAuditEntries,
+  totalElements: 2,
+  totalPages: 1,
+  number: 0,
+  size: 20,
+};
+
 export const mockTeamPage = {
   content: [mockTeamMemberBob, mockTeamMemberCarol],
   totalElements: 2,
@@ -282,6 +313,101 @@ export const handlers = [
       regressedByName: 'Alice Chen',
       regressionReason: body.reason,
     });
+  }),
+
+  // --- RCDO Admin endpoints ---
+
+  http.post('/api/v1/rally-cries', async ({ request }) => {
+    const body = (await request.json()) as Record<string, unknown>;
+    return HttpResponse.json(
+      {
+        id: 'rc-new',
+        title: body.title as string,
+        description: (body.description as string) ?? '',
+        status: 'ACTIVE',
+        displayOrder: 99,
+        definingObjectives: [],
+      },
+      { status: 201 },
+    );
+  }),
+
+  http.put('/api/v1/rally-cries/:id', async ({ request, params }) => {
+    const body = (await request.json()) as Record<string, unknown>;
+    const rc = mockRcdoTree.find((r) => r.id === params.id);
+    return HttpResponse.json({
+      ...rc,
+      id: params.id,
+      title: body.title as string,
+      description: (body.description as string) ?? '',
+      status: (body.status as string) ?? rc?.status ?? 'ACTIVE',
+    });
+  }),
+
+  http.delete('/api/v1/rally-cries/:id', () => {
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.post('/api/v1/defining-objectives', async ({ request }) => {
+    const body = (await request.json()) as Record<string, unknown>;
+    return HttpResponse.json(
+      {
+        id: 'do-new',
+        rallyCryId: body.rallyCryId as string,
+        title: body.title as string,
+        description: (body.description as string) ?? '',
+        status: 'ACTIVE',
+        outcomes: [],
+      },
+      { status: 201 },
+    );
+  }),
+
+  http.put('/api/v1/defining-objectives/:id', async ({ request, params }) => {
+    const body = (await request.json()) as Record<string, unknown>;
+    return HttpResponse.json({
+      id: params.id,
+      title: body.title as string,
+      description: (body.description as string) ?? '',
+      status: (body.status as string) ?? 'ACTIVE',
+      outcomes: [],
+    });
+  }),
+
+  http.delete('/api/v1/defining-objectives/:id', () => {
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.post('/api/v1/outcomes', async ({ request }) => {
+    const body = (await request.json()) as Record<string, unknown>;
+    return HttpResponse.json(
+      {
+        id: 'outcome-new',
+        definingObjectiveId: body.definingObjectiveId as string,
+        title: body.title as string,
+        description: (body.description as string) ?? '',
+        status: 'ACTIVE',
+      },
+      { status: 201 },
+    );
+  }),
+
+  http.put('/api/v1/outcomes/:id', async ({ request, params }) => {
+    const body = (await request.json()) as Record<string, unknown>;
+    return HttpResponse.json({
+      id: params.id,
+      title: body.title as string,
+      description: (body.description as string) ?? '',
+      status: (body.status as string) ?? 'ACTIVE',
+    });
+  }),
+
+  http.delete('/api/v1/outcomes/:id', () => {
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.get('/api/v1/manager/cycles/:cycleId/audit', () => {
+    return HttpResponse.json(mockAuditPage);
   }),
 
   http.post('/api/v1/manager/reviews/:cycleId', async ({ request, params }) => {

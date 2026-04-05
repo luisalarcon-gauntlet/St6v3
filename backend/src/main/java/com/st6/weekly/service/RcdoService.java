@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -63,5 +64,70 @@ public class RcdoService {
         outcome.setStatus("ACTIVE");
         outcome.setDefiningObjective(doObj);
         return outcomeRepository.save(outcome);
+    }
+
+    @Transactional(readOnly = true)
+    public List<RallyCry> fetchAllTree() {
+        return rallyCryRepository.fetchAllTree();
+    }
+
+    @Transactional
+    public RallyCry updateRallyCry(UUID id, String title, String description, String status) {
+        RallyCry rc = rallyCryRepository.findWithTreeById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Rally Cry not found: " + id));
+        rc.setTitle(inputSanitizer.sanitize(title));
+        rc.setDescription(inputSanitizer.sanitize(description));
+        if (status != null) rc.setStatus(status);
+        rc.setUpdatedAt(Instant.now());
+        return rallyCryRepository.save(rc);
+    }
+
+    @Transactional
+    public DefiningObjective updateDefiningObjective(UUID id, String title, String description, String status) {
+        DefiningObjective doObj = definingObjectiveRepository.findWithOutcomesById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Defining Objective not found: " + id));
+        doObj.setTitle(inputSanitizer.sanitize(title));
+        doObj.setDescription(inputSanitizer.sanitize(description));
+        if (status != null) doObj.setStatus(status);
+        doObj.setUpdatedAt(Instant.now());
+        return definingObjectiveRepository.save(doObj);
+    }
+
+    @Transactional
+    public Outcome updateOutcome(UUID id, String title, String description, String status) {
+        Outcome outcome = outcomeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Outcome not found: " + id));
+        outcome.setTitle(inputSanitizer.sanitize(title));
+        outcome.setDescription(inputSanitizer.sanitize(description));
+        if (status != null) outcome.setStatus(status);
+        outcome.setUpdatedAt(Instant.now());
+        return outcomeRepository.save(outcome);
+    }
+
+    @Transactional
+    public void archiveRallyCry(UUID id) {
+        RallyCry rc = rallyCryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Rally Cry not found: " + id));
+        rc.setStatus("ARCHIVED");
+        rc.setUpdatedAt(Instant.now());
+        rallyCryRepository.save(rc);
+    }
+
+    @Transactional
+    public void archiveDefiningObjective(UUID id) {
+        DefiningObjective doObj = definingObjectiveRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Defining Objective not found: " + id));
+        doObj.setStatus("ARCHIVED");
+        doObj.setUpdatedAt(Instant.now());
+        definingObjectiveRepository.save(doObj);
+    }
+
+    @Transactional
+    public void archiveOutcome(UUID id) {
+        Outcome outcome = outcomeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Outcome not found: " + id));
+        outcome.setStatus("ARCHIVED");
+        outcome.setUpdatedAt(Instant.now());
+        outcomeRepository.save(outcome);
     }
 }
