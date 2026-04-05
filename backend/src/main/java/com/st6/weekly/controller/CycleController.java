@@ -2,12 +2,15 @@ package com.st6.weekly.controller;
 
 import com.st6.weekly.domain.user.User;
 import com.st6.weekly.domain.user.UserRepository;
+import com.st6.weekly.dto.request.RegressCycleRequest;
 import com.st6.weekly.dto.response.CycleResponse;
 import com.st6.weekly.service.CycleService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -63,6 +66,16 @@ public class CycleController {
                                                     @AuthenticationPrincipal UserDetails userDetails) {
         UUID userId = resolveUserId(userDetails);
         return ResponseEntity.ok(CycleResponse.from(cycleService.reconcile(id, userId)));
+    }
+
+    @PostMapping("/{id}/regress")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    public ResponseEntity<CycleResponse> regressCycle(@PathVariable UUID id,
+                                                       @Valid @RequestBody RegressCycleRequest request,
+                                                       @AuthenticationPrincipal UserDetails userDetails) {
+        UUID managerId = resolveUserId(userDetails);
+        return ResponseEntity.ok(CycleResponse.from(
+                cycleService.regressCycle(id, managerId, request.reason())));
     }
 
     private UUID resolveUserId(UserDetails userDetails) {

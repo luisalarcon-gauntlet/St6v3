@@ -139,6 +139,58 @@ class CycleStateMachineTest {
                 .hasMessageContaining("Cannot transition");
     }
 
+    // --- Regression: valid states ---
+
+    @Test
+    void locked_can_regress_to_draft() {
+        CycleState result = stateMachine.regress(CycleState.LOCKED, "Manager requested re-plan");
+        assertThat(result).isEqualTo(CycleState.DRAFT);
+    }
+
+    @Test
+    void reconciling_can_regress_to_draft() {
+        CycleState result = stateMachine.regress(CycleState.RECONCILING, "Incorrect commitments");
+        assertThat(result).isEqualTo(CycleState.DRAFT);
+    }
+
+    @Test
+    void reconciled_can_regress_to_draft() {
+        CycleState result = stateMachine.regress(CycleState.RECONCILED, "Data entry error");
+        assertThat(result).isEqualTo(CycleState.DRAFT);
+    }
+
+    // --- Regression: invalid states ---
+
+    @Test
+    void draft_cannot_be_regressed() {
+        assertThatThrownBy(() -> stateMachine.regress(CycleState.DRAFT, "Some reason"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Cannot regress");
+    }
+
+    // --- Regression: reason validation ---
+
+    @Test
+    void regress_requires_non_blank_reason() {
+        assertThatThrownBy(() -> stateMachine.regress(CycleState.LOCKED, ""))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("reason");
+    }
+
+    @Test
+    void regress_rejects_null_reason() {
+        assertThatThrownBy(() -> stateMachine.regress(CycleState.LOCKED, null))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("reason");
+    }
+
+    @Test
+    void regress_rejects_whitespace_only_reason() {
+        assertThatThrownBy(() -> stateMachine.regress(CycleState.LOCKED, "   "))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("reason");
+    }
+
     // --- Helpers ---
 
     private TransitionContext validLockContext() {

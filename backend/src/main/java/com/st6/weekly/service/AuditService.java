@@ -26,4 +26,15 @@ public class AuditService {
         entry.setDetails(details);
         auditLogRepository.save(entry);
     }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void logInCurrentTransaction(String entityType, UUID entityId, String action, UUID actorId, Map<String, Object> details) {
+        AuditLog entry = new AuditLog();
+        entry.setEntityType(entityType);
+        entry.setEntityId(entityId);
+        entry.setAction(action);
+        entry.setActorId(actorId);
+        entry.setDetails(details);
+        auditLogRepository.save(entry);
+    }
 }

@@ -8,8 +8,12 @@ import com.st6.weekly.domain.cycle.CycleState;
 import com.st6.weekly.domain.cycle.CycleStateMachine;
 import com.st6.weekly.domain.cycle.WeeklyCycle;
 import com.st6.weekly.domain.cycle.WeeklyCycleRepository;
+import com.st6.weekly.domain.user.Role;
+import com.st6.weekly.domain.user.User;
+import com.st6.weekly.domain.user.UserRepository;
 import com.st6.weekly.exception.InvalidStateTransitionException;
 import com.st6.weekly.exception.ResourceNotFoundException;
+import com.st6.weekly.security.InputSanitizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.math.BigDecimal;
 import java.time.Clock;
@@ -31,6 +36,7 @@ import java.time.ZoneOffset;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -49,20 +55,32 @@ class CycleServiceTest {
     @Mock
     private WeeklyCommitRepository commitRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private InputSanitizer inputSanitizer;
+
+    @Mock
+    private AuditService auditService;
+
     @Spy
     private CycleStateMachine stateMachine;
 
     private CycleService cycleService;
 
     private UUID userId;
+    private UUID managerId;
     private LocalDate currentMonday;
     private Clock clock;
 
     @BeforeEach
     void setUp() {
         userId = UUID.randomUUID();
+        managerId = UUID.randomUUID();
         clock = Clock.systemDefaultZone();
-        cycleService = new CycleService(cycleRepository, commitRepository, stateMachine, clock);
+        cycleService = new CycleService(cycleRepository, commitRepository, stateMachine, clock,
+                userRepository, inputSanitizer, auditService);
         currentMonday = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
     }
 
@@ -304,7 +322,8 @@ class CycleServiceTest {
                 ZoneId.of("UTC")
         );
         CycleService sundayService = new CycleService(
-                cycleRepository, commitRepository, stateMachine, sundayClock);
+                cycleRepository, commitRepository, stateMachine, sundayClock,
+                userRepository, inputSanitizer, auditService);
 
         when(cycleRepository.findByUserIdAndWeekStartDate(eq(userId), eq(expectedMonday)))
                 .thenReturn(Optional.empty());
@@ -321,7 +340,108 @@ class CycleServiceTest {
         assertThat(result.getWeekStartDate().getDayOfWeek()).isEqualTo(DayOfWeek.MONDAY);
     }
 
+    // --- regressCycle ---
+
+    @Test
+    void regressCycle_updates_state_to_draft() {
+        WeeklyCycle cycle = buildCycle(CycleState.LOCKED);
+        User owner = buildUser(userId, Role.MEMBER, managerId);
+
+        when(cycleRepository.findByIdWithCommits(cycle.getId())).thenReturn(Optional.of(cycle));
+        when(userRepository.findById(cycle.getUserId())).thenReturn(Optional.of(owner));
+        when(inputSanitizer.sanitize("Re-plan needed")).thenReturn("Re-plan needed");
+        when(cycleRepository.save(any(WeeklyCycle.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        WeeklyCycle result = cycleService.regressCycle(cycle.getId(), managerId, "Re-plan needed");
+
+        assertThat(result.getState()).isEqualTo(CycleState.DRAFT);
+    }
+
+    @Test
+    void regressCycle_creates_audit_entry() {
+        WeeklyCycle cycle = buildCycle(CycleState.LOCKED);
+        User owner = buildUser(userId, Role.MEMBER, managerId);
+
+        when(cycleRepository.findByIdWithCommits(cycle.getId())).thenReturn(Optional.of(cycle));
+        when(userRepository.findById(cycle.getUserId())).thenReturn(Optional.of(owner));
+        when(inputSanitizer.sanitize("Re-plan needed")).thenReturn("Re-plan needed");
+        when(cycleRepository.save(any(WeeklyCycle.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        cycleService.regressCycle(cycle.getId(), managerId, "Re-plan needed");
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, Object>> detailsCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(auditService).logInCurrentTransaction(
+                eq("WEEKLY_CYCLE"), eq(cycle.getId()), eq("REGRESSED"),
+                eq(managerId), detailsCaptor.capture());
+
+        Map<String, Object> details = detailsCaptor.getValue();
+        assertThat(details).containsEntry("previous_state", "LOCKED");
+        assertThat(details).containsEntry("new_state", "DRAFT");
+        assertThat(details).containsEntry("reason", "Re-plan needed");
+        assertThat(details).containsKey("timestamp");
+    }
+
+    @Test
+    void regressCycle_rejects_if_not_managers_direct_report() {
+        WeeklyCycle cycle = buildCycle(CycleState.LOCKED);
+        UUID otherManagerId = UUID.randomUUID();
+        User owner = buildUser(userId, Role.MEMBER, otherManagerId); // belongs to different manager
+
+        when(cycleRepository.findByIdWithCommits(cycle.getId())).thenReturn(Optional.of(cycle));
+        when(userRepository.findById(cycle.getUserId())).thenReturn(Optional.of(owner));
+
+        assertThatThrownBy(() -> cycleService.regressCycle(cycle.getId(), managerId, "Reason"))
+                .isInstanceOf(AccessDeniedException.class);
+    }
+
+    @Test
+    void regressCycle_rejects_from_draft() {
+        WeeklyCycle cycle = buildCycle(CycleState.DRAFT);
+        User owner = buildUser(userId, Role.MEMBER, managerId);
+
+        when(cycleRepository.findByIdWithCommits(cycle.getId())).thenReturn(Optional.of(cycle));
+        when(userRepository.findById(cycle.getUserId())).thenReturn(Optional.of(owner));
+        when(inputSanitizer.sanitize("Reason")).thenReturn("Reason");
+
+        assertThatThrownBy(() -> cycleService.regressCycle(cycle.getId(), managerId, "Reason"))
+                .isInstanceOf(InvalidStateTransitionException.class)
+                .hasMessageContaining("Cannot regress");
+    }
+
+    @Test
+    void regressCycle_sanitizes_reason() {
+        WeeklyCycle cycle = buildCycle(CycleState.LOCKED);
+        User owner = buildUser(userId, Role.MEMBER, managerId);
+
+        when(cycleRepository.findByIdWithCommits(cycle.getId())).thenReturn(Optional.of(cycle));
+        when(userRepository.findById(cycle.getUserId())).thenReturn(Optional.of(owner));
+        when(inputSanitizer.sanitize("<script>alert('xss')</script>Reason")).thenReturn("Reason");
+        when(cycleRepository.save(any(WeeklyCycle.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        cycleService.regressCycle(cycle.getId(), managerId, "<script>alert('xss')</script>Reason");
+
+        verify(inputSanitizer).sanitize("<script>alert('xss')</script>Reason");
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, Object>> detailsCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(auditService).logInCurrentTransaction(
+                any(), any(), any(), any(), detailsCaptor.capture());
+        assertThat(detailsCaptor.getValue()).containsEntry("reason", "Reason");
+    }
+
     // --- Helpers ---
+
+    private User buildUser(UUID id, Role role, UUID userManagerId) {
+        User user = new User();
+        user.setId(id);
+        user.setEmail(id + "@st6.com");
+        user.setDisplayName("Test User");
+        user.setPasswordHash("hash");
+        user.setRole(role);
+        user.setManagerId(userManagerId);
+        return user;
+    }
 
     private WeeklyCycle buildCycle(CycleState state) {
         WeeklyCycle cycle = new WeeklyCycle();

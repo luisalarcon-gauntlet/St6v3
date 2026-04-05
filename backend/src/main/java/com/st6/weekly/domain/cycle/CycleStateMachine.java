@@ -54,6 +54,16 @@ public class CycleStateMachine {
         }
     }
 
+    public CycleState regress(CycleState from, String reason) {
+        if (from == CycleState.DRAFT) {
+            throw new IllegalStateException("Cannot regress from DRAFT");
+        }
+        if (reason == null || reason.isBlank()) {
+            throw new IllegalStateException("Regression reason must not be blank");
+        }
+        return CycleState.DRAFT;
+    }
+
     public record TransitionContext(
             int commitCount,
             int kingCount,

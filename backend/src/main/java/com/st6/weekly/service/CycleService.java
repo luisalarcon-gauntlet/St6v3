@@ -9,11 +9,15 @@ import com.st6.weekly.domain.cycle.CycleStateMachine;
 import com.st6.weekly.domain.cycle.CycleStateMachine.TransitionContext;
 import com.st6.weekly.domain.cycle.WeeklyCycle;
 import com.st6.weekly.domain.cycle.WeeklyCycleRepository;
+import com.st6.weekly.domain.user.User;
+import com.st6.weekly.domain.user.UserRepository;
 import com.st6.weekly.exception.InvalidStateTransitionException;
 import com.st6.weekly.exception.ResourceNotFoundException;
+import com.st6.weekly.security.InputSanitizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +27,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -33,6 +38,9 @@ public class CycleService {
     private final WeeklyCommitRepository commitRepository;
     private final CycleStateMachine stateMachine;
     private final Clock clock;
+    private final UserRepository userRepository;
+    private final InputSanitizer inputSanitizer;
+    private final AuditService auditService;
 
     @Transactional
     public WeeklyCycle getOrCreateCurrentCycle(UUID userId) {
@@ -82,6 +90,41 @@ public class CycleService {
         doTransition(cycle, CycleState.RECONCILED, ctx);
 
         cycle.setReconciledAt(Instant.now());
+        return cycleRepository.save(cycle);
+    }
+
+    @Transactional
+    public WeeklyCycle regressCycle(UUID cycleId, UUID managerId, String reason) {
+        WeeklyCycle cycle = cycleRepository.findByIdWithCommits(cycleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cycle not found: " + cycleId));
+
+        User cycleOwner = userRepository.findById(cycle.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("Cycle owner not found"));
+        if (!managerId.equals(cycleOwner.getManagerId())) {
+            throw new AccessDeniedException("Not authorized to regress this cycle");
+        }
+
+        String sanitizedReason = inputSanitizer.sanitize(reason);
+        CycleState previousState = cycle.getState();
+
+        try {
+            stateMachine.regress(cycle.getState(), sanitizedReason);
+            cycle.setState(CycleState.DRAFT);
+        } catch (IllegalStateException e) {
+            throw new InvalidStateTransitionException(e.getMessage());
+        }
+
+        cycle.setLockedAt(null);
+        cycle.setReconciledAt(null);
+        cycle.setUpdatedAt(Instant.now());
+
+        auditService.logInCurrentTransaction("WEEKLY_CYCLE", cycleId, "REGRESSED", managerId, Map.of(
+                "previous_state", previousState.name(),
+                "new_state", CycleState.DRAFT.name(),
+                "reason", sanitizedReason,
+                "timestamp", Instant.now().toString()
+        ));
+
         return cycleRepository.save(cycle);
     }
 
