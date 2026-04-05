@@ -213,6 +213,7 @@ st6v3/
 │       │   │   │   ├── SecurityConfig.java
 │       │   │   │   ├── CorsConfig.java
 │       │   │   │   ├── RateLimitConfig.java
+│       │   │   │   ├── RequestIdFilter.java
 │       │   │   │   └── WebConfig.java
 │       │   │   ├── security/
 │       │   │   │   ├── JwtService.java
@@ -275,6 +276,7 @@ st6v3/
 │       │       ├── application.yml
 │       │       ├── application-dev.yml
 │       │       ├── application-prod.yml
+│       │       ├── logback-spring.xml
 │       │       └── db/migration/
 │       │           ├── V1__create_users.sql
 │       │           ├── V2__create_rcdo_hierarchy.sql
@@ -349,8 +351,7 @@ st6v3/
 │       │   │   ├── ChessPiecePicker.tsx
 │       │   │   └── ChessPieceIcon.tsx
 │       │   ├── rcdo/
-│       │   │   ├── RCDOTreePicker.tsx
-│       │   │   └── RCDOBreadcrumb.tsx
+│       │   │   └── RCDOTreePicker.tsx
 │       │   ├── lifecycle/
 │       │   │   ├── WeekStateBar.tsx
 │       │   │   └── StateTransitionButton.tsx
@@ -360,14 +361,15 @@ st6v3/
 │       │   │   └── ReviewPanel.tsx
 │       │   └── shared/
 │       │       ├── ConfirmDialog.tsx
-│       │       ├── LoadingSkeleton.tsx
-│       │       └── Toast.tsx
+│       │       └── LoadingSkeleton.tsx
 │       ├── styles/
 │       │   └── globals.css
 │       └── __tests__/
 │           ├── setup.ts
 │           ├── mocks/
 │           │   └── handlers.ts       (MSW mock API handlers)
+│           ├── a11y/
+│           │   └── pages.a11y.test.tsx (axe-core accessibility audits)
 │           ├── components/
 │           │   ├── CommitForm.test.tsx
 │           │   ├── CommitList.test.tsx

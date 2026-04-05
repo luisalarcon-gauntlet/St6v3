@@ -53,7 +53,7 @@ describe('TeamMemberCard', () => {
 
     render(<TeamMemberCard member={mockTeamMemberBob} onSelect={onSelect} />);
 
-    await user.click(screen.getByRole('article'));
+    await user.click(screen.getByRole('button', { name: /view bob martinez/i }));
     expect(onSelect).toHaveBeenCalledWith('user-bob');
   });
 
@@ -76,7 +76,7 @@ describe('TeamMemberCard', () => {
   test('card has transition classes for CSS animations', () => {
     render(<TeamMemberCard member={mockTeamMemberBob} onSelect={vi.fn()} />);
 
-    const card = screen.getByRole('article');
+    const card = screen.getByRole('button', { name: /view bob martinez/i });
     expect(card.className).toContain('transition');
   });
 });

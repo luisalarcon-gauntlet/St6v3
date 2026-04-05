@@ -49,7 +49,7 @@ export function ReconcileForm({ commit, onReconcile }: ReconcileFormProps) {
     >
       <div className="flex items-center gap-2 mb-3">
         <ChessPieceIcon category={commit.chessCategory} />
-        <h3 className="text-white text-sm font-medium flex-1 truncate">{commit.title}</h3>
+        <h2 className="text-white text-sm font-medium flex-1 truncate">{commit.title}</h2>
         <span className="text-xs text-gray-400 font-mono">{commit.plannedHours}h planned</span>
       </div>
 

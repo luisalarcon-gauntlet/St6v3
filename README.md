@@ -16,8 +16,10 @@ A full-stack weekly planning application that replaces 15-Five by structurally c
 │  Spring Boot 3.3 (Java 21)                       │
 │                                                   │
 │  Request flow:                                    │
-│  CORS → Rate Limit → CSRF → JWT Cookie Extract   │
-│  → Auth Filter → Input Sanitize → Controller     │
+│  RequestId → CORS → Rate Limit ��� CSRF            │
+│  → JWT Cookie → Auth → Sanitize → Controller     │
+│                                                   │
+│  Observability: JSON logs, X-Request-Id, Actuator │
 │                                                   │
 │  Security: httpOnly JWT, Bucket4j, Jsoup          │
 │  Data: Flyway migrations, @Version locking        │
@@ -101,6 +103,27 @@ All weekly commits must link to a specific Outcome, ensuring individual work con
 ```
 DRAFT → LOCKED → RECONCILING → RECONCILED → [carry-forward]
 ```
+
+## Observability
+
+- **Structured logging:** JSON-formatted logs in production via logstash-logback-encoder; human-readable in dev
+- **Request ID correlation:** Every request gets a unique `X-Request-Id` header (auto-generated or propagated from client), logged in MDC for tracing across services
+- **Actuator endpoints:**
+  - `/actuator/health` — public health check
+  - `/actuator/metrics` — JVM, HTTP, and custom metrics (authenticated)
+  - `/actuator/info` — application info (authenticated)
+
+## Accessibility
+
+- All pages pass axe-core automated accessibility audits (vitest-axe)
+- Proper heading hierarchy (h1 > h2) throughout
+- Keyboard navigation on all interactive elements
+- ARIA landmarks: labeled `<nav>`, `<main>`, `<aside>`
+- Skip-to-content link for keyboard users
+- Focus management on route changes
+- `role="radiogroup"` on ChessPiecePicker, `role="tree"` on RCDOTreePicker
+- `aria-expanded`, `aria-selected`, `aria-haspopup` on dropdown controls
+- Escape key closes dropdowns and dialogs
 
 ## Security Measures
 

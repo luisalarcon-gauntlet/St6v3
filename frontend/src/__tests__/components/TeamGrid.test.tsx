@@ -120,7 +120,7 @@ describe('TeamGrid', () => {
       expect(screen.getByText('Bob Martinez')).toBeInTheDocument();
     });
 
-    const cards = screen.getAllByRole('article');
+    const cards = screen.getAllByRole('button', { name: /view .+? weekly commitments/i });
     await user.click(cards[0]);
 
     expect(onSelectMember).toHaveBeenCalledWith('user-bob');

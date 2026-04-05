@@ -22,13 +22,13 @@ export function Sidebar() {
   );
 
   return (
-    <aside className="w-64 bg-surface border-r border-border flex flex-col h-full">
+    <aside aria-label="Sidebar" className="w-64 bg-surface border-r border-border flex flex-col h-full">
       <div className="p-4 border-b border-border">
         <h2 className="text-lg font-bold text-white font-sans">ST6</h2>
         <p className="text-xs text-gray-400 font-mono">Weekly Commits</p>
       </div>
 
-      <nav className="flex-1 p-3 space-y-1">
+      <nav aria-label="Main navigation" className="flex-1 p-3 space-y-1">
         {visibleItems.map((item) => (
           <NavLink
             key={item.to}

@@ -19,7 +19,7 @@ export function CommitCard({ commit, rcdoTree, cycleState, onDelete }: CommitCar
             <ChessPieceIcon category={commit.chessCategory} />
             <span className="text-sm font-mono text-gray-400">{commit.plannedHours}h</span>
           </div>
-          <h3 className="text-white text-sm font-medium truncate">{commit.title}</h3>
+          <h2 className="text-white text-sm font-medium truncate">{commit.title}</h2>
           {commit.description && (
             <p className="text-gray-400 text-xs mt-1 line-clamp-2">{commit.description}</p>
           )}

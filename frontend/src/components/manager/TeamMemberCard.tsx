@@ -12,13 +12,22 @@ export function TeamMemberCard({ member, onSelect }: TeamMemberCardProps) {
   const isReviewed = cycle?.reviewedAt != null;
 
   return (
-    <article
-      className="bg-surface border border-border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:border-gray-500"
+    <div
+      className="bg-surface border border-border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:border-gray-500 focus:outline-none focus:border-primary"
+      role="button"
+      tabIndex={0}
+      aria-label={`View ${member.displayName}'s weekly commitments`}
       onClick={() => onSelect(member.id)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onSelect(member.id);
+        }
+      }}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <h3 className="text-white text-sm font-medium truncate">{member.displayName}</h3>
+          <h2 className="text-white text-sm font-medium truncate">{member.displayName}</h2>
           <p className="text-gray-400 text-xs mt-0.5">{member.email}</p>
         </div>
 
@@ -42,7 +51,7 @@ export function TeamMemberCard({ member, onSelect }: TeamMemberCardProps) {
           <span>{totalPlannedHours}h planned</span>
         </div>
       )}
-    </article>
+    </div>
   );
 }
 
