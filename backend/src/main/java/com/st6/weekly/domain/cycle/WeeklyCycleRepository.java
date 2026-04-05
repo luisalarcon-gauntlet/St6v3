@@ -20,4 +20,8 @@ public interface WeeklyCycleRepository extends JpaRepository<WeeklyCycle, UUID> 
 
     @EntityGraph(attributePaths = {"commits"})
     Page<WeeklyCycle> findByUserIdOrderByWeekStartDateDesc(UUID userId, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"commits"})
+    @Query("SELECT c FROM WeeklyCycle c WHERE c.userId IN :userIds AND c.weekStartDate = :weekStartDate")
+    List<WeeklyCycle> findByUserIdInAndWeekStartDate(List<UUID> userIds, LocalDate weekStartDate);
 }

@@ -73,3 +73,10 @@ export interface WeeklyCommit {
   reconciliationNotes: string | null;
   version: number;
 }
+
+export interface TeamMemberOverview {
+  id: string;
+  email: string;
+  displayName: string;
+  currentCycle: WeeklyCycle | null;
+}

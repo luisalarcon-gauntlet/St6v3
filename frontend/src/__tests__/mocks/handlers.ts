@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import type { WeeklyCycle, WeeklyCommit, RallyCry } from '@/types/domain';
+import type { WeeklyCycle, WeeklyCommit, RallyCry, TeamMemberOverview } from '@/types/domain';
 
 // --- Mock data ---
 
@@ -116,6 +116,75 @@ export const mockCycleReconciling: WeeklyCycle = {
   ],
 };
 
+export const mockCycleReconciled: WeeklyCycle = {
+  ...mockCycleDraft,
+  id: 'cycle-bob',
+  userId: 'user-bob',
+  state: 'RECONCILED',
+  version: 2,
+  lockedAt: '2026-03-30T09:00:00Z',
+  reconciledAt: '2026-04-04T17:00:00Z',
+  reviewedAt: null,
+  reviewerId: null,
+  reviewerNotes: null,
+  commits: [
+    { ...mockCommit, completionStatus: 'COMPLETED', actualHours: 18, version: 2 },
+    { ...mockCommit2, completionStatus: 'COMPLETED', actualHours: 3, version: 2 },
+    { ...mockCommit3, completionStatus: 'IN_PROGRESS', actualHours: 4, version: 2 },
+  ],
+};
+
+export const mockCycleLocked: WeeklyCycle = {
+  ...mockCycleDraft,
+  id: 'cycle-carol',
+  userId: 'user-carol',
+  state: 'LOCKED',
+  version: 1,
+  lockedAt: '2026-03-30T09:00:00Z',
+  commits: [
+    { ...mockCommit, id: 'commit-c1', weeklyCycleId: 'cycle-carol', version: 1 },
+    { ...mockCommit2, id: 'commit-c2', weeklyCycleId: 'cycle-carol', version: 1 },
+    { ...mockCommit3, id: 'commit-c3', weeklyCycleId: 'cycle-carol', version: 1 },
+  ],
+};
+
+export const mockManagerUser = {
+  id: 'user-alice',
+  email: 'alice@st6.com',
+  displayName: 'Alice Chen',
+  role: 'MANAGER' as const,
+  managerId: null,
+};
+
+export const mockTeamMemberBob: TeamMemberOverview = {
+  id: 'user-bob',
+  email: 'bob@st6.com',
+  displayName: 'Bob Martinez',
+  currentCycle: mockCycleReconciled,
+};
+
+export const mockTeamMemberCarol: TeamMemberOverview = {
+  id: 'user-carol',
+  email: 'carol@st6.com',
+  displayName: 'Carol Nguyen',
+  currentCycle: mockCycleLocked,
+};
+
+export const mockTeamMemberNoCycle: TeamMemberOverview = {
+  id: 'user-dave',
+  email: 'dave@st6.com',
+  displayName: 'Dave Kim',
+  currentCycle: null,
+};
+
+export const mockTeamPage = {
+  content: [mockTeamMemberBob, mockTeamMemberCarol],
+  totalElements: 2,
+  totalPages: 1,
+  number: 0,
+  size: 20,
+};
+
 // --- Handlers ---
 
 export const handlers = [
@@ -184,6 +253,32 @@ export const handlers = [
       state: 'RECONCILED',
       version: 2,
       reconciledAt: new Date().toISOString(),
+    });
+  }),
+
+  http.get('/api/v1/manager/team', () => {
+    return HttpResponse.json(mockTeamPage);
+  }),
+
+  http.get('/api/v1/manager/team/:userId', ({ params }) => {
+    const { userId } = params;
+    if (userId === 'user-bob') return HttpResponse.json(mockTeamMemberBob);
+    if (userId === 'user-carol') return HttpResponse.json(mockTeamMemberCarol);
+    return HttpResponse.json(
+      { type: 'about:blank', title: 'Not Found', status: 404, detail: 'User not found' },
+      { status: 404 },
+    );
+  }),
+
+  http.post('/api/v1/manager/reviews/:cycleId', async ({ request, params }) => {
+    const body = await request.json() as Record<string, unknown>;
+    return HttpResponse.json({
+      ...mockCycleReconciled,
+      id: params.cycleId,
+      reviewedAt: new Date().toISOString(),
+      reviewerId: 'user-alice',
+      reviewerNotes: body.reviewerNotes,
+      version: 3,
     });
   }),
 ];

@@ -1,8 +1,107 @@
+import { useCallback, useState } from 'react';
+import { TeamGrid } from '@/components/manager/TeamGrid';
+import { ReviewPanel } from '@/components/manager/ReviewPanel';
+import { getTeamMemberDetail, submitReview } from '@/api/manager';
+import { normalizeError } from '@/api/client';
+import type { TeamMemberOverview } from '@/types/domain';
+import type { AppError } from '@/types/errors';
+import { LoadingSkeleton } from '@/components/shared/LoadingSkeleton';
+
 export function ManagerDashboardPage() {
+  const [selectedMember, setSelectedMember] = useState<TeamMemberOverview | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [detailError, setDetailError] = useState<AppError | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSelectMember = useCallback(async (memberId: string) => {
+    setDetailLoading(true);
+    setDetailError(null);
+    try {
+      const member = await getTeamMemberDetail(memberId);
+      setSelectedMember(member);
+    } catch (err) {
+      setDetailError(normalizeError(err));
+    } finally {
+      setDetailLoading(false);
+    }
+  }, []);
+
+  const handleSubmitReview = useCallback(async (cycleId: string, notes: string) => {
+    setSubmitting(true);
+    try {
+      await submitReview(cycleId, { reviewerNotes: notes });
+      // Refresh the member detail to show updated review
+      if (selectedMember) {
+        const updated = await getTeamMemberDetail(selectedMember.id);
+        setSelectedMember(updated);
+      }
+    } catch (err) {
+      throw normalizeError(err);
+    } finally {
+      setSubmitting(false);
+    }
+  }, [selectedMember]);
+
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-white">Team Dashboard</h1>
-      <p className="text-gray-400 mt-2">Review your team's weekly commitments.</p>
+    <div className="max-w-5xl mx-auto space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Team Dashboard</h1>
+          <p className="text-gray-400 text-sm mt-1">Review your team's weekly commitments.</p>
+        </div>
+
+        {selectedMember && (
+          <button
+            type="button"
+            onClick={() => setSelectedMember(null)}
+            className="text-sm text-gray-400 hover:text-white transition-colors"
+          >
+            &larr; Back to team
+          </button>
+        )}
+      </div>
+
+      {!selectedMember && !detailLoading && (
+        <TeamGrid onSelectMember={handleSelectMember} />
+      )}
+
+      {detailLoading && <LoadingSkeleton />}
+
+      {detailError && (
+        <div role="alert" className="bg-danger/10 border border-danger/30 rounded-lg p-4 text-danger text-sm">
+          {detailError.detail}
+        </div>
+      )}
+
+      {selectedMember && !detailLoading && (
+        <div className="space-y-6">
+          <div className="bg-surface border border-border rounded-lg p-4">
+            <h2 className="text-white font-medium">{selectedMember.displayName}</h2>
+            <p className="text-gray-400 text-xs mt-0.5">{selectedMember.email}</p>
+            {selectedMember.currentCycle && (
+              <p className="text-xs text-gray-500 mt-2">
+                Week of {selectedMember.currentCycle.weekStartDate} &middot;{' '}
+                <span className="text-primary">
+                  {selectedMember.currentCycle.state.charAt(0) +
+                    selectedMember.currentCycle.state.slice(1).toLowerCase()}
+                </span>
+              </p>
+            )}
+          </div>
+
+          {selectedMember.currentCycle ? (
+            <ReviewPanel
+              cycle={selectedMember.currentCycle}
+              onSubmitReview={handleSubmitReview}
+              submitting={submitting}
+            />
+          ) : (
+            <div className="text-center py-12 text-gray-400">
+              <p className="text-sm">This member has no cycle for the current week.</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
