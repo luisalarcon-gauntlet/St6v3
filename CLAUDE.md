@@ -442,3 +442,26 @@ Loaded via Flyway migration `V5__seed_dev_data.sql`, gated by Spring profile `de
 - "Delight Users with Product Quality" → "Page load < 2 seconds" → "CDN migration complete", "Frontend bundle optimization"
 
 **Sample weeks:** 4 weeks of historical data for Bob and Carol with varying states and completion rates. Current week in DRAFT.
+
+---
+
+## Design Context
+
+### Users
+Weekly planning tool for ST6 team members (individual contributors, managers, and admins) at an Austin-based PE operating firm. Users open it Monday morning to plan weekly commitments, linking individual work to organizational strategic goals via the RCDO hierarchy. End-of-week reconciliation closes the loop. Managers review team alignment asynchronously.
+
+### Brand Personality
+**Bold, Strategic, Elite** — High-stakes war room energy with strong contrast, decisive color use, and a leadership tone. This is a tool for people who operate at the top of their game.
+
+### Emotional Goal
+**Clarity and focus** — "I know exactly what to do this week." The interface should reduce cognitive load, surface priorities immediately, and make the planning ritual feel decisive rather than administrative.
+
+### Accessibility
+Practical best-effort: keyboard navigable, screen reader friendly, reasonable contrast ratios. Continue existing patterns (skip-to-content, aria labels, focus management, axe-core tests) without targeting formal WCAG certification.
+
+### Design Principles
+1. **Hierarchy is king** — Use weight, color, and spacing to make the most important information unmissable. The KING commit should visually dominate; a PAWN should recede.
+2. **Data density over decoration** — Show more, decorate less. Monospace labels, tight grids, information-rich cards. No empty states that waste screen real estate.
+3. **Color with intent** — Every color signals state or priority. No decorative color. The palette is small and each hue has a job.
+4. **Decisive interactions** — Buttons, transitions, and states should feel instant and certain. No ambiguous loading states, no soft maybe-states. The UI commits (pun intended).
+5. **Earned complexity** — Start simple, reveal depth. The chess metaphor, RCDO tree, and lifecycle states are complex — surface them progressively, not all at once.
