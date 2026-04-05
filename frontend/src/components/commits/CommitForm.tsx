@@ -76,7 +76,7 @@ export function CommitForm({ rcdoTree, onSubmit, existingChessCategories }: Comm
   const disabledPieces = existingChessCategories.includes('KING') ? ['KING'] : [];
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="bg-surface border border-border rounded-lg p-4 space-y-4">
+    <form onSubmit={handleSubmit} noValidate className="bg-surface border border-border rounded-lg p-5 space-y-4">
       <div>
         <label htmlFor="commit-title" className="block text-sm text-muted mb-1">
           Title

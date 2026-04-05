@@ -7,16 +7,18 @@ interface CommitCardProps {
   rcdoTree: RallyCry[];
   cycleState: CycleState;
   onDelete: (id: string) => void;
+  index?: number;
 }
 
-export function CommitCard({ commit, rcdoTree, cycleState, onDelete }: CommitCardProps) {
+export function CommitCard({ commit, rcdoTree, cycleState, onDelete, index = 0 }: CommitCardProps) {
   const outcomeName = findOutcomeName(rcdoTree, commit.outcomeId);
   const chess = CHESS_STYLES[commit.chessCategory];
   const status = COMPLETION_STATUS_STYLES[commit.completionStatus];
 
   return (
     <article
-      className={`bg-surface border border-border rounded-lg p-4 transition-all duration-200 hover:border-muted ${chess.border} ${chess.card}`}
+      className={`animate-card-in bg-surface border border-border rounded-lg p-4 transition-all duration-200 hover:border-muted hover:shadow-lg hover:shadow-black/20 hover:-translate-y-px ${chess.border} ${chess.card}`}
+      style={{ animationDelay: `${index * 60}ms` }}
     >
       <div className="flex items-start gap-3">
         <span className="font-mono text-xs text-muted shrink-0 mt-0.5">

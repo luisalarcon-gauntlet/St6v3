@@ -50,9 +50,9 @@ export function LoginPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-2xl space-y-6">
         <div className="bg-surface border border-border rounded-lg p-8">
-          <h1 className="text-2xl font-sans font-bold text-primary mb-6">
-            ST6 Weekly Commits
-          </h1>
+          <div className="mb-6">
+            <h1 className="text-primary font-sans">ST6 Weekly Commits</h1>
+          </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div role="alert" className="text-danger text-sm">

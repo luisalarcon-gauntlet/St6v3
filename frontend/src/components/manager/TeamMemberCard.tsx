@@ -14,7 +14,7 @@ export function TeamMemberCard({ member, onSelect }: TeamMemberCardProps) {
 
   return (
     <div
-      className="bg-surface border border-border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:border-muted focus:outline-none focus:border-accent"
+      className="bg-surface border border-border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:border-muted hover:shadow-lg hover:shadow-black/20 hover:-translate-y-px focus:outline-none focus:border-accent"
       role="button"
       tabIndex={0}
       aria-label={`View ${member.displayName}'s weekly commitments`}

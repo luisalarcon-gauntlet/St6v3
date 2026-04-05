@@ -11,10 +11,10 @@ export function WeekSummary({ commits }: WeekSummaryProps) {
   const hasActuals = commits.some((c) => c.actualHours !== null);
 
   return (
-    <div className="bg-surface border border-border rounded-lg p-4">
-      <h2 className="text-xs font-mono text-muted uppercase tracking-wider mb-3">
+    <div className="bg-surface border border-border rounded-lg p-5">
+      <h3 className="text-xs font-mono text-muted uppercase tracking-wider mb-3">
         Week Summary
-      </h2>
+      </h3>
       <dl className="space-y-3">
         <div className="flex justify-between items-baseline">
           <dt className="text-sm text-muted">Commitments</dt>

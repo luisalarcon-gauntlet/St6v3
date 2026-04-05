@@ -66,12 +66,12 @@ export function WeeklyPlannerPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-8">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-6">
           <div>
-            <h1 className="text-2xl font-bold text-primary">Weekly Planner</h1>
-            <div className="mt-1">
+            <h1 className="text-primary">Weekly Planner</h1>
+            <div className="mt-1.5">
               <WeekStateBar state={cycle.state} weekStartDate={cycle.weekStartDate} />
             </div>
           </div>
@@ -91,7 +91,7 @@ export function WeeklyPlannerPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-8">
         <div className="space-y-6">
           {cycle.state === 'DRAFT' && (
             <CommitForm

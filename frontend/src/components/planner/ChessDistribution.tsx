@@ -18,10 +18,10 @@ export function ChessDistribution({ commits }: ChessDistributionProps) {
   );
 
   return (
-    <div className="bg-surface border border-border rounded-lg p-4">
-      <h2 className="text-xs font-mono text-muted uppercase tracking-wider mb-3">
+    <div className="bg-surface border border-border rounded-lg p-5">
+      <h3 className="text-xs font-mono text-muted uppercase tracking-wider mb-3">
         Chess Distribution
-      </h2>
+      </h3>
       <div className="grid grid-cols-3 gap-2">
         {ALL_PIECES.map((cat) => {
           const count = counts[cat];

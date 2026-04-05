@@ -39,13 +39,14 @@ export function CommitList({
   return (
     <>
       <div className="space-y-3">
-        {commits.map((commit) => (
+        {commits.map((commit, i) => (
           <CommitCard
             key={commit.id}
             commit={commit}
             rcdoTree={rcdoTree}
             cycleState={cycleState}
             onDelete={(id) => setDeleteTarget(id)}
+            index={i}
           />
         ))}
       </div>

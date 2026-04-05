@@ -14,11 +14,11 @@ function formatWeekDate(dateStr: string): string {
 export function WeekStateBar({ state, weekStartDate }: WeekStateBarProps) {
   return (
     <div className="flex items-center gap-3">
-      <span className="text-sm text-muted font-mono">
+      <span className="text-sm text-muted font-mono tracking-tight">
         Week of {formatWeekDate(weekStartDate)}
       </span>
       <span
-        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${CYCLE_STATE_STYLES[state].badge}`}
+        className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-semibold uppercase tracking-wide border ${CYCLE_STATE_STYLES[state].badge}`}
       >
         {state}
       </span>

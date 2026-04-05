@@ -19,7 +19,7 @@ export function AppShell() {
         Skip to content
       </a>
       <Sidebar />
-      <main id="main-content" className="flex-1 p-6 overflow-auto" tabIndex={-1}>
+      <main id="main-content" className="flex-1 p-8 overflow-auto" tabIndex={-1}>
         <Outlet />
       </main>
     </div>
