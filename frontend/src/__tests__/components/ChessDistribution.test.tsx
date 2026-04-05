@@ -31,7 +31,7 @@ describe('ChessDistribution', () => {
 
   test('shows count of 1 for KING with single KING commit', () => {
     // mockCommit is KING
-    const { container } = renderDistribution([mockCommit]);
+    renderDistribution([mockCommit]);
 
     // Find the King's row — the parent of the King icon should contain the count
     const kingIcon = screen.getByTitle('King');
@@ -41,7 +41,7 @@ describe('ChessDistribution', () => {
 
   test('shows count of 0 for unused categories', () => {
     // mockCommit=KING only
-    const { container } = renderDistribution([mockCommit]);
+    renderDistribution([mockCommit]);
 
     const queenIcon = screen.getByTitle('Queen');
     const queenRow = queenIcon.closest('div[class*="flex items-center"]');
@@ -50,7 +50,7 @@ describe('ChessDistribution', () => {
 
   test('dims categories with zero count', () => {
     // mockCommit=KING only → Queen/Rook/Bishop/Knight/Pawn have 0
-    const { container } = renderDistribution([mockCommit]);
+    renderDistribution([mockCommit]);
 
     const queenIcon = screen.getByTitle('Queen');
     const queenRow = queenIcon.closest('div[class*="flex items-center"]');
@@ -58,7 +58,7 @@ describe('ChessDistribution', () => {
   });
 
   test('does not dim categories with non-zero count', () => {
-    const { container } = renderDistribution([mockCommit]);
+    renderDistribution([mockCommit]);
 
     const kingIcon = screen.getByTitle('King');
     const kingRow = kingIcon.closest('div[class*="flex items-center"]');
