@@ -78,6 +78,7 @@ class CycleControllerIT {
         jdbcTemplate.execute("DELETE FROM weekly_commits");
         jdbcTemplate.execute("DELETE FROM weekly_cycles");
         jdbcTemplate.execute("DELETE FROM audit_log");
+        jdbcTemplate.execute("UPDATE users SET manager_id = NULL");
         jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM outcomes");
         jdbcTemplate.execute("DELETE FROM defining_objectives");

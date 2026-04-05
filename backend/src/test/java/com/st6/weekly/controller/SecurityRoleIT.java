@@ -51,7 +51,8 @@ class SecurityRoleIT {
         jdbcTemplate.execute("DELETE FROM weekly_commits");
         jdbcTemplate.execute("DELETE FROM weekly_cycles");
         jdbcTemplate.execute("DELETE FROM audit_log");
-        userRepository.deleteAll();
+        jdbcTemplate.execute("UPDATE users SET manager_id = NULL");
+        jdbcTemplate.execute("DELETE FROM users");
 
         memberCookie = createUserAndLogin("bob@st6.com", "Bob", Role.MEMBER);
         managerCookie = createUserAndLogin("alice@st6.com", "Alice", Role.MANAGER);
