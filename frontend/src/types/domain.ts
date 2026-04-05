@@ -56,6 +56,9 @@ export interface WeeklyCycle {
   reviewedAt: string | null;
   reviewerId: string | null;
   reviewerNotes: string | null;
+  regressedFromState: CycleState | null;
+  regressedByName: string | null;
+  regressionReason: string | null;
   commits: WeeklyCommit[];
 }
 

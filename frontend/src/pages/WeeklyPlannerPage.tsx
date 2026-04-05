@@ -85,6 +85,17 @@ export function WeeklyPlannerPage() {
         />
       </div>
 
+      {cycle.regressionReason && (
+        <div role="status" className="bg-warning/10 border border-warning/30 rounded-lg p-3 text-warning text-sm">
+          This week was sent back to Draft
+          {cycle.regressedByName ? ` by ${cycle.regressedByName}` : ''}
+          {cycle.regressedFromState
+            ? ` from ${cycle.regressedFromState.charAt(0) + cycle.regressedFromState.slice(1).toLowerCase()}`
+            : ''}
+          : {cycle.regressionReason}
+        </div>
+      )}
+
       {transitionError && (
         <div role="alert" className="bg-danger/10 border border-danger/30 rounded-lg p-3 text-danger text-sm">
           {transitionError}

@@ -33,6 +33,10 @@ export interface ReviewRequest {
   reviewerNotes: string;
 }
 
+export interface RegressCycleRequest {
+  reason: string;
+}
+
 export interface PageResponse<T> {
   content: T[];
   totalElements: number;

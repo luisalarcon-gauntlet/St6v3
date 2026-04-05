@@ -33,3 +33,9 @@ export function reconcileCycle(id: string, version: number): Promise<WeeklyCycle
     .post<WeeklyCycle>(`/api/v1/cycles/${id}/reconcile`, { version })
     .then((r) => r.data);
 }
+
+export function regressCycle(id: string, reason: string): Promise<WeeklyCycle> {
+  return client
+    .post<WeeklyCycle>(`/api/v1/cycles/${id}/regress`, { reason })
+    .then((r) => r.data);
+}

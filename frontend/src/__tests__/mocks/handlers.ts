@@ -101,6 +101,9 @@ export const mockCycleDraft: WeeklyCycle = {
   reviewedAt: null,
   reviewerId: null,
   reviewerNotes: null,
+  regressedFromState: null,
+  regressedByName: null,
+  regressionReason: null,
   commits: [mockCommit, mockCommit2, mockCommit3],
 };
 
@@ -268,6 +271,17 @@ export const handlers = [
       { type: 'about:blank', title: 'Not Found', status: 404, detail: 'User not found' },
       { status: 404 },
     );
+  }),
+
+  http.post('/api/v1/cycles/:cycleId/regress', async ({ request }) => {
+    const body = await request.json() as Record<string, unknown>;
+    return HttpResponse.json({
+      ...mockCycleDraft,
+      version: 3,
+      regressedFromState: 'LOCKED',
+      regressedByName: 'Alice Chen',
+      regressionReason: body.reason,
+    });
   }),
 
   http.post('/api/v1/manager/reviews/:cycleId', async ({ request, params }) => {
