@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import jakarta.servlet.http.Cookie;
+import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -165,6 +167,21 @@ class AuthControllerIT {
         mockMvc.perform(post("/api/v1/auth/logout")
                         .cookie(token))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void login_cookie_has_samesite_strict() throws Exception {
+        MvcResult result = mockMvc.perform(post("/api/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"email": "alice@st6.com", "password": "Password1!"}
+                                """))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Collection<String> setCookieHeaders = result.getResponse().getHeaders(HttpHeaders.SET_COOKIE);
+        assertThat(setCookieHeaders).isNotEmpty();
+        assertThat(setCookieHeaders).anyMatch(h -> h.contains("st6_token") && h.contains("SameSite=Strict"));
     }
 
     @Test

@@ -71,6 +71,33 @@ describe('API Client', () => {
     expect(res.data).toEqual({ data: 'second' });
   });
 
+  test('POST requests include X-XSRF-TOKEN header from cookie', async () => {
+    // Set the XSRF-TOKEN cookie
+    Object.defineProperty(document, 'cookie', {
+      writable: true,
+      value: 'XSRF-TOKEN=test-csrf-token-123; other=value',
+    });
+
+    let capturedHeaders: Record<string, string> = {};
+
+    server.use(
+      http.post('/api/v1/test-csrf', ({ request }) => {
+        capturedHeaders = Object.fromEntries(request.headers.entries());
+        return HttpResponse.json({ ok: true });
+      }),
+    );
+
+    await client.post('/api/v1/test-csrf', { data: 'test' });
+
+    expect(capturedHeaders['x-xsrf-token']).toBe('test-csrf-token-123');
+
+    // Cleanup
+    Object.defineProperty(document, 'cookie', {
+      writable: true,
+      value: '',
+    });
+  });
+
   test('normalizeError extracts ProblemDetail from response', () => {
     const axiosError = {
       isAxiosError: true,

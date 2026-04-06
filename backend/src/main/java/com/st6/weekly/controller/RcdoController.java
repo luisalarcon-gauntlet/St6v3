@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,12 +38,14 @@ public class RcdoController {
     }
 
     @PostMapping("/api/v1/rally-cries")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RcdoTreeResponse> createRallyCry(@Valid @RequestBody CreateRallyCryRequest request) {
         RallyCry rc = rcdoService.createRallyCry(request.title(), request.description());
         return ResponseEntity.status(HttpStatus.CREATED).body(RcdoTreeResponse.from(rc));
     }
 
     @PutMapping("/api/v1/rally-cries/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RcdoTreeResponse> updateRallyCry(
             @PathVariable UUID id, @Valid @RequestBody UpdateRcdoRequest request) {
         RallyCry rc = rcdoService.updateRallyCry(id, request.title(), request.description(), request.status());
@@ -50,12 +53,14 @@ public class RcdoController {
     }
 
     @DeleteMapping("/api/v1/rally-cries/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> archiveRallyCry(@PathVariable UUID id) {
         rcdoService.archiveRallyCry(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/api/v1/defining-objectives")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RcdoTreeResponse.DefiningObjectiveNode> createDefiningObjective(
             @Valid @RequestBody CreateDefiningObjectiveRequest request) {
         DefiningObjective doObj = rcdoService.createDefiningObjective(
@@ -64,6 +69,7 @@ public class RcdoController {
     }
 
     @PutMapping("/api/v1/defining-objectives/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RcdoTreeResponse.DefiningObjectiveNode> updateDefiningObjective(
             @PathVariable UUID id, @Valid @RequestBody UpdateRcdoRequest request) {
         DefiningObjective doObj = rcdoService.updateDefiningObjective(
@@ -72,12 +78,14 @@ public class RcdoController {
     }
 
     @DeleteMapping("/api/v1/defining-objectives/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> archiveDefiningObjective(@PathVariable UUID id) {
         rcdoService.archiveDefiningObjective(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/api/v1/outcomes")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RcdoTreeResponse.OutcomeNode> createOutcome(
             @Valid @RequestBody CreateOutcomeRequest request) {
         Outcome outcome = rcdoService.createOutcome(
@@ -86,6 +94,7 @@ public class RcdoController {
     }
 
     @PutMapping("/api/v1/outcomes/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RcdoTreeResponse.OutcomeNode> updateOutcome(
             @PathVariable UUID id, @Valid @RequestBody UpdateRcdoRequest request) {
         Outcome outcome = rcdoService.updateOutcome(
@@ -94,6 +103,7 @@ public class RcdoController {
     }
 
     @DeleteMapping("/api/v1/outcomes/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> archiveOutcome(@PathVariable UUID id) {
         rcdoService.archiveOutcome(id);
         return ResponseEntity.noContent().build();

@@ -39,7 +39,7 @@ public class AuthController {
         ResponseCookie cookie = ResponseCookie.from("st6_token", result.token())
                 .httpOnly(true)
                 .secure(isSecure)
-                .sameSite("Lax")
+                .sameSite("Strict")
                 .path("/")
                 .maxAge(Duration.ofMillis(jwtExpirationMs))
                 .build();
@@ -64,7 +64,7 @@ public class AuthController {
         ResponseCookie cookie = ResponseCookie.from("st6_token", "")
                 .httpOnly(true)
                 .secure(isSecure)
-                .sameSite("Lax")
+                .sameSite("Strict")
                 .path("/")
                 .maxAge(0)
                 .build();

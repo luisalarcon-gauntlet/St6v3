@@ -6,6 +6,7 @@ import com.st6.weekly.domain.commit.WeeklyCommitRepository;
 import com.st6.weekly.domain.cycle.CycleState;
 import com.st6.weekly.domain.cycle.WeeklyCycle;
 import com.st6.weekly.domain.cycle.WeeklyCycleRepository;
+import com.st6.weekly.security.InputSanitizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ public class CarryForwardService {
 
     private final WeeklyCycleRepository cycleRepository;
     private final WeeklyCommitRepository commitRepository;
+    private final InputSanitizer inputSanitizer;
 
     @Transactional
     public void carryForward(WeeklyCycle reconciledCycle) {
@@ -48,8 +50,8 @@ public class CarryForwardService {
                 .map(original -> {
                     WeeklyCommit copy = new WeeklyCommit();
                     copy.setWeeklyCycle(nextCycle);
-                    copy.setTitle(original.getTitle());
-                    copy.setDescription(original.getDescription());
+                    copy.setTitle(inputSanitizer.sanitize(original.getTitle()));
+                    copy.setDescription(inputSanitizer.sanitize(original.getDescription()));
                     copy.setOutcomeId(original.getOutcomeId());
                     copy.setChessCategory(original.getChessCategory());
                     copy.setPlannedHours(original.getPlannedHours());

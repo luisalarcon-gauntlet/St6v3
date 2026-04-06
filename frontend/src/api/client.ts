@@ -11,6 +11,25 @@ const client = axios.create({
   },
 });
 
+// --- CSRF token interceptor: read XSRF-TOKEN cookie and set header on state-changing requests ---
+
+const STATE_CHANGING_METHODS = new Set(['post', 'put', 'delete', 'patch']);
+
+function getCookie(name: string): string | undefined {
+  const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : undefined;
+}
+
+client.interceptors.request.use((config) => {
+  if (config.method && STATE_CHANGING_METHODS.has(config.method.toLowerCase())) {
+    const token = getCookie('XSRF-TOKEN');
+    if (token) {
+      config.headers.set('X-XSRF-TOKEN', token);
+    }
+  }
+  return config;
+});
+
 // --- Retry interceptor: 3 retries with exponential backoff on 5xx ---
 
 const MAX_RETRIES = 3;

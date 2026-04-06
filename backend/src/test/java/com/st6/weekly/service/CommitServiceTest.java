@@ -163,7 +163,7 @@ class CommitServiceTest {
         WeeklyCommit commit = buildCommit(draftCycle, ChessCategory.QUEEN);
         draftCycle.getCommits().add(commit);
 
-        when(commitRepository.findById(commit.getId())).thenReturn(Optional.of(commit));
+        when(commitRepository.findByIdWithCycle(commit.getId())).thenReturn(Optional.of(commit));
         when(outcomeRepository.existsById(outcomeId)).thenReturn(true);
         when(commitRepository.save(any(WeeklyCommit.class))).thenAnswer(inv -> inv.getArgument(0));
 
@@ -185,7 +185,7 @@ class CommitServiceTest {
         WeeklyCycle lockedCycle = buildCycle(CycleState.LOCKED);
         WeeklyCommit commit = buildCommit(lockedCycle, ChessCategory.QUEEN);
 
-        when(commitRepository.findById(commit.getId())).thenReturn(Optional.of(commit));
+        when(commitRepository.findByIdWithCycle(commit.getId())).thenReturn(Optional.of(commit));
 
         UpdateCommitRequest request = new UpdateCommitRequest(
                 "Updated", null, outcomeId, ChessCategory.QUEEN, BigDecimal.valueOf(4));
@@ -201,7 +201,7 @@ class CommitServiceTest {
         WeeklyCommit commitToUpdate = buildCommit(draftCycle, ChessCategory.QUEEN);
         draftCycle.setCommits(new ArrayList<>(List.of(existingKing, commitToUpdate)));
 
-        when(commitRepository.findById(commitToUpdate.getId())).thenReturn(Optional.of(commitToUpdate));
+        when(commitRepository.findByIdWithCycle(commitToUpdate.getId())).thenReturn(Optional.of(commitToUpdate));
         when(outcomeRepository.existsById(outcomeId)).thenReturn(true);
 
         UpdateCommitRequest request = new UpdateCommitRequest(
@@ -219,7 +219,7 @@ class CommitServiceTest {
         WeeklyCycle reconcilingCycle = buildCycle(CycleState.RECONCILING);
         WeeklyCommit commit = buildCommit(reconcilingCycle, ChessCategory.QUEEN);
 
-        when(commitRepository.findById(commit.getId())).thenReturn(Optional.of(commit));
+        when(commitRepository.findByIdWithCycle(commit.getId())).thenReturn(Optional.of(commit));
         when(commitRepository.save(any(WeeklyCommit.class))).thenAnswer(inv -> inv.getArgument(0));
 
         ReconcileCommitRequest request = new ReconcileCommitRequest(
@@ -238,7 +238,7 @@ class CommitServiceTest {
     void reconcile_fails_if_cycle_not_in_reconciling() {
         WeeklyCommit commit = buildCommit(draftCycle, ChessCategory.QUEEN);
 
-        when(commitRepository.findById(commit.getId())).thenReturn(Optional.of(commit));
+        when(commitRepository.findByIdWithCycle(commit.getId())).thenReturn(Optional.of(commit));
 
         ReconcileCommitRequest request = new ReconcileCommitRequest(
                 BigDecimal.valueOf(6), CompletionStatus.COMPLETED, null);
@@ -255,7 +255,7 @@ class CommitServiceTest {
         WeeklyCommit commit = buildCommit(draftCycle, ChessCategory.QUEEN);
         draftCycle.getCommits().add(commit);
 
-        when(commitRepository.findById(commit.getId())).thenReturn(Optional.of(commit));
+        when(commitRepository.findByIdWithCycle(commit.getId())).thenReturn(Optional.of(commit));
         when(commitRepository.save(any(WeeklyCommit.class))).thenAnswer(inv -> inv.getArgument(0));
 
         commitService.deleteCommit(commit.getId(), userId);
@@ -272,7 +272,7 @@ class CommitServiceTest {
         WeeklyCycle lockedCycle = buildCycle(CycleState.LOCKED);
         WeeklyCommit commit = buildCommit(lockedCycle, ChessCategory.QUEEN);
 
-        when(commitRepository.findById(commit.getId())).thenReturn(Optional.of(commit));
+        when(commitRepository.findByIdWithCycle(commit.getId())).thenReturn(Optional.of(commit));
 
         assertThatThrownBy(() -> commitService.deleteCommit(commit.getId(), userId))
                 .isInstanceOf(InvalidStateTransitionException.class)
@@ -282,7 +282,7 @@ class CommitServiceTest {
     @Test
     void delete_nonexistent_commit_throws() {
         UUID fakeId = UUID.randomUUID();
-        when(commitRepository.findById(fakeId)).thenReturn(Optional.empty());
+        when(commitRepository.findByIdWithCycle(fakeId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> commitService.deleteCommit(fakeId, userId))
                 .isInstanceOf(ResourceNotFoundException.class);
@@ -293,11 +293,27 @@ class CommitServiceTest {
         WeeklyCommit commit = buildCommit(draftCycle, ChessCategory.QUEEN);
         draftCycle.getCommits().add(commit);
 
-        when(commitRepository.findById(commit.getId())).thenReturn(Optional.of(commit));
+        when(commitRepository.findByIdWithCycle(commit.getId())).thenReturn(Optional.of(commit));
 
         UUID otherUser = UUID.randomUUID();
         assertThatThrownBy(() -> commitService.deleteCommit(commit.getId(), otherUser))
                 .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    // --- findOwnedCommit uses eager fetch ---
+
+    @Test
+    void findOwnedCommit_uses_repository_with_eager_cycle_loading() {
+        WeeklyCommit commit = buildCommit(draftCycle, ChessCategory.QUEEN);
+
+        when(commitRepository.findByIdWithCycle(commit.getId())).thenReturn(Optional.of(commit));
+        when(commitRepository.save(any(WeeklyCommit.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        // reorderCommit calls findOwnedCommit internally
+        commitService.reorderCommit(commit.getId(), 5, userId);
+
+        verify(commitRepository).findByIdWithCycle(commit.getId());
+        verify(commitRepository, never()).findById(any());
     }
 
     // --- Helpers ---

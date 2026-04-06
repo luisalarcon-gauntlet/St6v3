@@ -137,7 +137,7 @@ public class CommitService {
     }
 
     private WeeklyCommit findOwnedCommit(UUID commitId, UUID userId) {
-        WeeklyCommit commit = commitRepository.findById(commitId)
+        WeeklyCommit commit = commitRepository.findByIdWithCycle(commitId)
                 .orElseThrow(() -> new ResourceNotFoundException("Commit not found: " + commitId));
         if (!commit.getWeeklyCycle().getUserId().equals(userId)) {
             throw new ResourceNotFoundException("Commit not found: " + commitId);

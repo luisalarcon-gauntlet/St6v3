@@ -10,9 +10,11 @@ import com.st6.weekly.domain.cycle.WeeklyCycleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import com.st6.weekly.security.InputSanitizer;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -31,6 +33,7 @@ class CarryForwardServiceTest {
 
     @Mock private WeeklyCycleRepository cycleRepository;
     @Mock private WeeklyCommitRepository commitRepository;
+    @Spy private InputSanitizer inputSanitizer;
     @InjectMocks private CarryForwardService carryForwardService;
 
     private UUID userId;
