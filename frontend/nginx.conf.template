@@ -5,7 +5,7 @@ server {
     index index.html;
 
     location /api/ {
-        resolver 8.8.8.8 valid=30s;
+        resolver ${NGINX_RESOLVER} valid=30s;
         set $backend "${API_URL}";
         proxy_pass $backend/api/;
         proxy_set_header Host $host;

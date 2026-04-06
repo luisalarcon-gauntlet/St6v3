@@ -33,6 +33,8 @@ services:
       context: ./frontend
       args:
         VITE_DEV_MODE: "true"
+    environment:
+      NGINX_RESOLVER: "127.0.0.11"
     ports:
       - "5173:5173"
     depends_on:
