@@ -218,7 +218,7 @@ export function RCDOAdminPage() {
         type="button"
         onClick={() => handleArchive(type, id)}
         disabled={saving}
-        className="text-[11px] text-muted hover:text-danger transition-colors"
+        className="text-[11px] text-muted hover:text-danger transition-colors min-h-[44px] px-2"
         aria-label={`Archive ${title}`}
       >
         Archive
@@ -228,7 +228,7 @@ export function RCDOAdminPage() {
         type="button"
         onClick={() => handleRestore(type, id, title)}
         disabled={saving}
-        className="text-[11px] text-muted hover:text-success transition-colors"
+        className="text-[11px] text-muted hover:text-success transition-colors min-h-[44px] px-2"
         aria-label={`Restore ${title}`}
       >
         Restore
@@ -250,7 +250,7 @@ export function RCDOAdminPage() {
           type="button"
           onClick={handleCreateRallyCry}
           disabled={saving}
-          className="px-4 py-2 text-sm bg-accent text-white rounded hover:bg-accent/90 transition-colors disabled:opacity-50"
+          className="px-4 py-2 min-h-[44px] text-sm bg-accent text-white rounded hover:bg-accent/90 transition-colors disabled:opacity-50"
         >
           + Rally Cry
         </button>
@@ -277,7 +277,7 @@ export function RCDOAdminPage() {
             }`}
           >
             {/* Rally Cry header */}
-            <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
+            <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 border-b border-border">
               <span className="text-accent font-mono text-xs" aria-hidden="true">RC</span>
               <div className="flex-1 min-w-0">
                 {editing?.id === rc.id ? (
@@ -297,7 +297,7 @@ export function RCDOAdminPage() {
             </div>
 
             {/* Defining Objectives */}
-            <div className="px-4 py-2 space-y-2">
+            <div className="px-3 sm:px-4 py-2 space-y-2">
               {rc.definingObjectives.map((doObj: DefiningObjective) => (
                 <div
                   key={doObj.id}
@@ -305,7 +305,7 @@ export function RCDOAdminPage() {
                     doObj.status === 'ARCHIVED' ? 'opacity-60' : ''
                   }`}
                 >
-                  <div className="flex items-center gap-3 py-1.5">
+                  <div className="flex items-center gap-2 sm:gap-3 py-1.5">
                     <span className="text-warning font-mono text-[10px]" aria-hidden="true">DO</span>
                     <div className="flex-1 min-w-0">
                       {editing?.id === doObj.id ? (
@@ -329,7 +329,7 @@ export function RCDOAdminPage() {
                     {doObj.outcomes.map((outcome: Outcome) => (
                       <div
                         key={outcome.id}
-                        className={`flex items-center gap-3 py-1 ${
+                        className={`flex items-center gap-2 sm:gap-3 py-1 ${
                           outcome.status === 'ARCHIVED' ? 'opacity-60' : ''
                         }`}
                       >
@@ -355,7 +355,7 @@ export function RCDOAdminPage() {
                       type="button"
                       onClick={() => handleCreateOutcome(doObj.id)}
                       disabled={saving || doObj.status === 'ARCHIVED'}
-                      className="text-[11px] text-muted hover:text-accent transition-colors py-1 disabled:opacity-50"
+                      className="text-[11px] text-muted hover:text-accent transition-colors min-h-[44px] disabled:opacity-50"
                     >
                       + Outcome
                     </button>
@@ -366,7 +366,7 @@ export function RCDOAdminPage() {
                 type="button"
                 onClick={() => handleCreateDefiningObjective(rc.id)}
                 disabled={saving || rc.status === 'ARCHIVED'}
-                className="text-[11px] text-muted hover:text-accent transition-colors pl-4 py-1 disabled:opacity-50"
+                className="text-[11px] text-muted hover:text-accent transition-colors pl-2 sm:pl-4 min-h-[44px] disabled:opacity-50"
               >
                 + Defining Objective
               </button>

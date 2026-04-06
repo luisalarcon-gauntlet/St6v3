@@ -31,7 +31,7 @@ export function StateTransitionButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`${getCycleStateStyle(cycleState).button} text-primary text-sm px-4 py-2 rounded font-medium transition-colors disabled:opacity-50`}
+      className={`${getCycleStateStyle(cycleState).button} text-primary text-sm px-4 py-2 min-h-[44px] rounded font-medium transition-colors disabled:opacity-50`}
     >
       {label}
     </button>

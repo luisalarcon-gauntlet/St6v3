@@ -88,7 +88,7 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-accent text-primary rounded py-2 font-medium hover:bg-accent/80 transition-colors disabled:opacity-50"
+              className="w-full bg-accent text-primary rounded py-2 min-h-[44px] font-medium hover:bg-accent/80 transition-colors disabled:opacity-50"
             >
               {submitting ? 'Signing in...' : 'Sign In'}
             </button>
@@ -100,13 +100,13 @@ export function LoginPage() {
             <h2 className="text-sm font-mono text-muted uppercase tracking-wider mb-4">
               Dev Quick Login
             </h2>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {DEMO_USERS.map((u) => (
                 <button
                   key={u.email}
                   disabled={submitting}
                   onClick={() => handleLogin(u.email, 'Password1!')}
-                  className="flex items-center justify-between bg-background border border-border rounded-lg px-4 py-3 text-left hover:border-muted transition-colors disabled:opacity-50"
+                  className="flex items-center justify-between bg-background border border-border rounded-lg px-4 py-3 min-h-[44px] text-left hover:border-muted transition-colors disabled:opacity-50"
                 >
                   <div>
                     <div className="text-primary text-sm font-medium">{u.name}</div>

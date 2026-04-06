@@ -25,7 +25,7 @@ export function ChessPiecePicker({ value, onChange, disabledPieces = [] }: Chess
           <label
             key={piece.value}
             className={`
-              flex items-center gap-1.5 px-3 py-1.5 rounded border text-sm cursor-pointer
+              flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] rounded border text-sm cursor-pointer
               transition-colors select-none
               ${isSelected ? 'border-accent bg-accent/10 text-accent' : 'border-border text-muted hover:border-muted'}
               ${isDisabled ? 'opacity-40 cursor-not-allowed' : ''}

@@ -143,7 +143,7 @@ export function CommitForm({ rcdoTree, onSubmit, existingChessCategories }: Comm
       <button
         type="submit"
         disabled={submitting}
-        className="bg-accent text-primary text-sm px-4 py-2 rounded font-medium hover:bg-accent/80 transition-colors disabled:opacity-50"
+        className="bg-accent text-primary text-sm px-4 py-2 min-h-[44px] rounded font-medium hover:bg-accent/80 transition-colors disabled:opacity-50"
       >
         {submitting ? 'Adding...' : 'Add Commit'}
       </button>

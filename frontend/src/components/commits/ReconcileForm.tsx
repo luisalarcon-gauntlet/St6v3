@@ -106,7 +106,7 @@ export function ReconcileForm({ commit, onReconcile }: ReconcileFormProps) {
         <button
           type="submit"
           disabled={saving}
-          className="bg-accent text-primary text-xs px-3 py-1.5 rounded font-medium hover:bg-accent/80 transition-colors disabled:opacity-50"
+          className="bg-accent text-primary text-xs px-3 py-1.5 min-h-[44px] rounded font-medium hover:bg-accent/80 transition-colors disabled:opacity-50"
         >
           {saving ? 'Saving...' : 'Save'}
         </button>

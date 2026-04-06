@@ -82,7 +82,7 @@ export function RCDOTreePicker({ tree, value, onChange }: RCDOTreePickerProps) {
                         triggerRef.current?.focus();
                       }}
                       className={`
-                        w-full text-left px-6 py-1.5 text-sm transition-colors
+                        w-full text-left px-6 py-1.5 min-h-[44px] text-sm transition-colors
                         ${value === outcome.id ? 'text-accent bg-accent/5' : 'text-primary hover:bg-primary/5'}
                       `}
                     >

@@ -13,10 +13,12 @@ vi.mock('@/context/AuthContext', () => ({
 import { useAuth } from '@/context/AuthContext';
 const mockedUseAuth = vi.mocked(useAuth);
 
+const mockOnClose = vi.fn();
+
 function renderSidebar(route = '/') {
   return render(
     <MemoryRouter initialEntries={[route]}>
-      <Sidebar />
+      <Sidebar open={true} onClose={mockOnClose} />
     </MemoryRouter>,
   );
 }

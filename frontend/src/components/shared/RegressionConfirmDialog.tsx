@@ -50,7 +50,7 @@ export function RegressionConfirmDialog({
       aria-modal="true"
       aria-labelledby="regression-dialog-title"
     >
-      <div className="bg-surface border border-border rounded-lg p-6 max-w-md w-full mx-4 shadow-xl transition-transform duration-200">
+      <div className="bg-surface border border-border rounded-lg p-5 sm:p-6 max-w-md w-full mx-4 shadow-xl transition-transform duration-200">
         <h2 id="regression-dialog-title" className="text-primary font-medium text-lg">
           Regress Week
         </h2>
@@ -77,7 +77,7 @@ export function RegressionConfirmDialog({
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 text-sm text-muted hover:text-primary border border-border rounded transition-colors"
+            className="px-4 py-2 min-h-[44px] text-sm text-muted hover:text-primary border border-border rounded transition-colors"
           >
             Cancel
           </button>
@@ -85,7 +85,7 @@ export function RegressionConfirmDialog({
             type="button"
             onClick={() => onConfirm(reason)}
             disabled={reason.trim() === '' || submitting}
-            className="px-4 py-2 text-sm text-primary bg-danger hover:bg-danger/80 rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 min-h-[44px] text-sm text-primary bg-danger hover:bg-danger/80 rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {submitting ? 'Regressing\u2026' : 'Regress to Draft'}
           </button>

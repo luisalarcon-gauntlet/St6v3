@@ -60,7 +60,7 @@ export function ReviewPanel({ cycle, onSubmitReview, submitting }: ReviewPanelPr
         type="button"
         disabled={notes.trim() === '' || submitting}
         onClick={() => setShowConfirm(true)}
-        className="px-4 py-2 text-sm text-primary bg-accent hover:bg-accent/80 rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        className="px-4 py-2 min-h-[44px] text-sm text-primary bg-accent hover:bg-accent/80 rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {submitting ? 'Submitting...' : 'Submit Review'}
       </button>

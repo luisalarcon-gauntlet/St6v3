@@ -86,7 +86,7 @@ export function ManagerDashboardPage() {
           <button
             type="button"
             onClick={() => setSelectedMember(null)}
-            className="text-sm text-muted hover:text-primary transition-colors"
+            className="text-sm text-muted hover:text-primary transition-colors min-h-[44px] flex items-center"
           >
             &larr; Back to team
           </button>
@@ -132,7 +132,7 @@ export function ManagerDashboardPage() {
                 <button
                   type="button"
                   onClick={() => setRegressOpen(true)}
-                  className="px-3 py-1.5 text-xs text-danger border border-danger/30 rounded hover:bg-danger/10 transition-colors"
+                  className="px-3 py-1.5 min-h-[44px] text-xs text-danger border border-danger/30 rounded hover:bg-danger/10 transition-colors"
                 >
                   Regress Week
                 </button>

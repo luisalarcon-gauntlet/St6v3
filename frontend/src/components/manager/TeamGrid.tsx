@@ -66,7 +66,7 @@ export function TeamGrid({ onSelectMember }: TeamGridProps) {
             aria-label="Previous"
             disabled={page === 0}
             onClick={() => setPage((p) => Math.max(0, p - 1))}
-            className="px-3 py-1.5 text-sm text-muted hover:text-primary border border-border rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-3 py-1.5 min-h-[44px] text-sm text-muted hover:text-primary border border-border rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Previous
           </button>
@@ -80,7 +80,7 @@ export function TeamGrid({ onSelectMember }: TeamGridProps) {
             aria-label="Next"
             disabled={team.number >= team.totalPages - 1}
             onClick={() => setPage((p) => p + 1)}
-            className="px-3 py-1.5 text-sm text-muted hover:text-primary border border-border rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-3 py-1.5 min-h-[44px] text-sm text-muted hover:text-primary border border-border rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Next
           </button>

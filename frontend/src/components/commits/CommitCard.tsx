@@ -37,7 +37,7 @@ export function CommitCard({ commit, rcdoTree, cycleState, onDelete, index = 0 }
                   type="button"
                   aria-label="Delete"
                   onClick={() => onDelete(commit.id)}
-                  className="text-muted hover:text-danger text-sm transition-colors"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center text-muted hover:text-danger text-sm transition-colors -mr-2"
                 >
                   &times;
                 </button>
